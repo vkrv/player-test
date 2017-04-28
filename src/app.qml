@@ -6,6 +6,7 @@ Item {
 	}
 
 	Row {
+		id: menu;
 		y: 20;
 		spacing: 20;
 		anchors.horizontalCenter: parent.horizontalCenter;
@@ -33,6 +34,13 @@ Item {
 		y: 80;
 
 		ShakaPlayer {
+			visible: menu.currentPage === "shaka";
+			width: 100%; height: 100%;
+			source: "http://content.jwplatform.com/videos/SJnBN5W3-mjpS2Ylx.mp4";
+		}
+
+		JWPlayer {
+			visible: menu.currentPage === "jw";
 			width: 100%; height: 100%;
 			source: "http://content.jwplatform.com/videos/SJnBN5W3-mjpS2Ylx.mp4";
 		}

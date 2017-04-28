@@ -27,8 +27,7 @@ Item {
 	}
 	
 	Rectangle {
-		width: 90%;
-		x: 5%;
+		width: 90%; x: 5%;
 		color: "#CCCCCC";
 		height: 600;
 		y: 80;

@@ -35,13 +35,15 @@ Item {
 		ShakaPlayer {
 			visible: menu.currentPage === "shaka";
 			width: 100%; height: 100%;
-			source: "http://content.jwplatform.com/videos/SJnBN5W3-mjpS2Ylx.mp4";
+			source: "http://testapi.start.film/mobile/series/06ded95f-a7e8-3150-8cec-d084d565aae4/watch.m3u8";
 		}
 
-		JWPlayer {
+		Item { width: 100%; height: 100%;
 			visible: menu.currentPage === "jw";
-			width: 100%; height: 100%;
-			source: "http://content.jwplatform.com/videos/SJnBN5W3-mjpS2Ylx.mp4";
+			JWPlayer {
+				width: 100%; height: 100%;
+				source: "http://testapi.start.film/mobile/series/06ded95f-a7e8-3150-8cec-d084d565aae4/watch.m3u8";
+			}
 		}
 	}
 }

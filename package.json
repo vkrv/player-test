@@ -1,0 +1,31 @@
+{
+  "name": "qmlcore",
+  "version": "0.9.1",
+  "description": "QML to HTML5 translator, both for mobile and desktop targets",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pureqml/qmlcore"
+  },
+  "bin": {
+    "build": "build"
+  },
+  "bugs": {
+    "url": "https://github.com/pureqml/qmlcore/issues"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "QMLCore team",
+  "license": "MIT",
+  "dependencies": {
+    "gulp-install": "^1.1.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.6"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.8",
+    "gulp": "^3.9.1",
+    "gulp-run": "*",
+    "gulp-watch": "^4.3.11"
+  }
+}

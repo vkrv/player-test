@@ -109,7 +109,7 @@ Item {
 			}
 			TheOPlayer {
 				id: theo;
-				source: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm";
+//				source: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm";
 				width: 100%; height: 100%;
 			}
 		}

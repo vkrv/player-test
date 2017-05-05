@@ -11,8 +11,10 @@ if (!_globals.html5) /** @const */ _globals.html5 = {}
 if (!_globals.html5.dist) /** @const */ _globals.html5.dist = {}
 if (!_globals.controls) /** @const */ _globals.controls = {}
 if (!_globals.controls.core) /** @const */ _globals.controls.core = {}
-if (!_globals.controls.pure) /** @const */ _globals.controls.pure = {}
+if (!_globals.controls.mixins) /** @const */ _globals.controls.mixins = {}
 if (!_globals.controls.web) /** @const */ _globals.controls.web = {}
+if (!_globals.controls.pure) /** @const */ _globals.controls.pure = {}
+if (!_globals.controls.input) /** @const */ _globals.controls.input = {}
 if (!_globals.src) /** @const */ _globals.src = {}
 _globals.core.core = (function() {/** @const */
 var exports = _globals;
@@ -788,142 +790,6 @@ var core = _globals.core.core
 		return (a && a.enabled())? a: null;
 	}
 
-//=====[component core.System]=====================
-
-	var SystemBaseComponent = _globals.core.Object
-	var SystemBasePrototype = SystemBaseComponent.prototype
-
-/**
- * @constructor
- * @extends {_globals.core.Object}
- */
-	var SystemComponent = _globals.core.System = function(parent, _delegate) {
-		SystemBaseComponent.apply(this, arguments)
-	//custom constructor:
-	{
-		var ctx = this._context
-		this.browser = _globals.core.browser
-		this.userAgent = _globals.core.userAgent
-		this.webkit = this.userAgent.toLowerCase().indexOf('webkit') >= 0
-		this.device = _globals.core.device
-		this.vendor = _globals.core.vendor
-		this.os = _globals.core.os
-		this.language = _globals.core.language
-		ctx.language = this.language.replace('-', '_')
-
-		this.support3dTransforms = ctx.backend.capabilities.csstransforms3d || false
-		this.supportTransforms = ctx.backend.capabilities.csstransforms || false
-		this.supportTransitions = ctx.backend.capabilities.csstransitions || false
-	}
-
-	}
-	var SystemPrototype = SystemComponent.prototype = Object.create(SystemBasePrototype)
-
-	SystemPrototype.constructor = SystemComponent
-
-	SystemPrototype.componentName = 'core.System'
-	SystemPrototype._updateLayoutType = function() {
-		if (!this.contextWidth || !this.contextHeight)
-			return
-		var min = this.contextWidth;// < this.contextHeight ? this.contextWidth : this.contextHeight
-
-		if (min <= 320)
-			this.layoutType = this.MobileS
-		else if (min <= 375)
-			this.layoutType = this.MobileM
-		else if (min <= 425)
-			this.layoutType = this.MobileL
-		else if (min <= 768)
-			this.layoutType = this.Tablet
-		else if (this.contextWidth <= 1024)
-			this.layoutType = this.Laptop
-		else if (this.contextWidth <= 1440)
-			this.layoutType = this.LaptopL
-		else
-			this.layoutType = this.Laptop4K
-	}
-	core.addProperty(SystemPrototype, 'string', 'userAgent')
-	core.addProperty(SystemPrototype, 'string', 'language')
-	core.addProperty(SystemPrototype, 'string', 'browser')
-	core.addProperty(SystemPrototype, 'string', 'vendor')
-	core.addProperty(SystemPrototype, 'string', 'os')
-	core.addProperty(SystemPrototype, 'bool', 'webkit')
-	core.addProperty(SystemPrototype, 'bool', 'support3dTransforms')
-	core.addProperty(SystemPrototype, 'bool', 'supportTransforms')
-	core.addProperty(SystemPrototype, 'bool', 'supportTransitions')
-	core.addProperty(SystemPrototype, 'bool', 'portrait')
-	core.addProperty(SystemPrototype, 'bool', 'landscape')
-	core.addProperty(SystemPrototype, 'bool', 'pageActive', (true))
-	core.addProperty(SystemPrototype, 'int', 'screenWidth')
-	core.addProperty(SystemPrototype, 'int', 'screenHeight')
-/** @const @type {number} */
-	SystemPrototype.Desktop = 0
-/** @const @type {number} */
-	SystemComponent.Desktop = 0
-/** @const @type {number} */
-	SystemPrototype.Tv = 1
-/** @const @type {number} */
-	SystemComponent.Tv = 1
-/** @const @type {number} */
-	SystemPrototype.Mobile = 2
-/** @const @type {number} */
-	SystemComponent.Mobile = 2
-	core.addProperty(SystemPrototype, 'enum', 'device')
-/** @const @type {number} */
-	SystemPrototype.MobileS = 0
-/** @const @type {number} */
-	SystemComponent.MobileS = 0
-/** @const @type {number} */
-	SystemPrototype.MobileM = 1
-/** @const @type {number} */
-	SystemComponent.MobileM = 1
-/** @const @type {number} */
-	SystemPrototype.MobileL = 2
-/** @const @type {number} */
-	SystemComponent.MobileL = 2
-/** @const @type {number} */
-	SystemPrototype.Tablet = 3
-/** @const @type {number} */
-	SystemComponent.Tablet = 3
-/** @const @type {number} */
-	SystemPrototype.Laptop = 4
-/** @const @type {number} */
-	SystemComponent.Laptop = 4
-/** @const @type {number} */
-	SystemPrototype.LaptopL = 5
-/** @const @type {number} */
-	SystemComponent.LaptopL = 5
-/** @const @type {number} */
-	SystemPrototype.Laptop4K = 6
-/** @const @type {number} */
-	SystemComponent.Laptop4K = 6
-	core.addProperty(SystemPrototype, 'enum', 'layoutType')
-	_globals.core._protoOnChanged(SystemPrototype, 'contextHeight', (function(value) { this._updateLayoutType() } ))
-	_globals.core._protoOnChanged(SystemPrototype, 'contextWidth', (function(value) { this._updateLayoutType() } ))
-
-	SystemPrototype.__create = function(__closure) {
-		SystemBasePrototype.__create.call(this, __closure.__base = { })
-
-	}
-	SystemPrototype.__setup = function(__closure) {
-	SystemBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
-//assigning portrait to (this._get('parent')._get('width') < this._get('parent')._get('height'))
-			var update$this$portrait = (function() { this.portrait = ((this._get('parent')._get('width') < this._get('parent')._get('height'))); }).bind(this)
-			var dep$this$portrait$0 = this._get('parent')
-			this.connectOnChanged(dep$this$portrait$0, 'height', update$this$portrait)
-			var dep$this$portrait$1 = this._get('parent')
-			this.connectOnChanged(dep$this$portrait$1, 'width', update$this$portrait)
-			this._removeUpdater('portrait', [[dep$this$portrait$0, 'height', update$this$portrait],[dep$this$portrait$1, 'width', update$this$portrait]])
-			update$this$portrait();
-//assigning landscape to (! this._get('portrait'))
-			var update$this$landscape = (function() { this.landscape = ((! this._get('portrait'))); }).bind(this)
-			var dep$this$landscape$0 = this
-			this.connectOnChanged(dep$this$landscape$0, 'portrait', update$this$landscape)
-			this._removeUpdater('landscape', [[dep$this$landscape$0, 'portrait', update$this$landscape]])
-			update$this$landscape();
-}
-
-
 //=====[component core.Item]=====================
 
 	var ItemBaseComponent = _globals.core.Object
@@ -1420,6 +1286,108 @@ var core = _globals.core.core
 }
 
 
+//=====[component controls.Bitmovin]=====================
+
+	var BitmovinBaseComponent = _globals.core.Item
+	var BitmovinBasePrototype = BitmovinBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Item}
+ */
+	var BitmovinComponent = _globals.controls.Bitmovin = function(parent, _delegate) {
+		BitmovinBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this.element.setAttribute('id', 'bitmovin')
+
+		this.conf = {
+			key:       "8ea98414-488b-41cf-ac9b-fdec00b58572",
+			source: {
+				poster:      "//bitmovin-a.akamaihd.net/content/MI201109210084_1/poster.jpg"
+			}
+		};
+
+		this._player = window.bitmovin.player("bitmovin");
+	}
+
+	}
+	var BitmovinPrototype = BitmovinComponent.prototype = Object.create(BitmovinBasePrototype)
+
+	BitmovinPrototype.constructor = BitmovinComponent
+
+	BitmovinPrototype.componentName = 'controls.Bitmovin'
+	BitmovinPrototype.finished = _globals.core.createSignal('finished')
+	BitmovinPrototype.error = _globals.core.createSignal('error')
+	BitmovinPrototype.play = function(state) {
+		// this._player.play(state)
+	}
+	BitmovinPrototype.loadPlaylist = function(pl) {
+
+		this._player.setup(pl[0])
+
+		var self = this;
+
+		this._player.on('all', function (e, x) {
+			if (e !== "time" && self.logsEnabled)
+			    console.log("JWplayer event", e, x)
+		})
+
+
+
+		this._player.load(pl)
+	}
+	core.addProperty(BitmovinPrototype, 'string', 'source')
+	core.addProperty(BitmovinPrototype, 'Color', 'backgroundColor', ("#000"))
+	core.addProperty(BitmovinPrototype, 'float', 'volume', (1.0))
+	core.addProperty(BitmovinPrototype, 'bool', 'loop', (false))
+	core.addProperty(BitmovinPrototype, 'bool', 'ready', (false))
+	core.addProperty(BitmovinPrototype, 'bool', 'muted', (false))
+	core.addProperty(BitmovinPrototype, 'bool', 'paused', (false))
+	core.addProperty(BitmovinPrototype, 'bool', 'waiting', (false))
+	core.addProperty(BitmovinPrototype, 'bool', 'seeking', (false))
+	core.addProperty(BitmovinPrototype, 'bool', 'autoPlay', (false))
+	core.addProperty(BitmovinPrototype, 'int', 'duration')
+	core.addProperty(BitmovinPrototype, 'int', 'progress')
+	core.addProperty(BitmovinPrototype, 'int', 'buffered')
+	core.addProperty(BitmovinPrototype, 'bool', 'logsEnabled')
+	_globals.core._protoOnChanged(BitmovinPrototype, 'source', (function(value) {
+		this.conf.source.hls = value;
+
+		if (this._player.isSetup())
+			this._player.unload()
+
+		this._player.setup(this.conf).then(function(value) {
+			// Success
+			console.log("Successfully created bitmovin player instance");
+		}, function(reason) {
+			// Error!
+			console.log("Error while creating bitmovin player instance");
+		});
+
+	} ))
+	_globals.core._protoOnChanged(BitmovinPrototype, 'width', (function(value) { this.element.dom.width = value; } ))
+	_globals.core._protoOnChanged(BitmovinPrototype, 'height', (function(value) { this.element.dom.height = value; } ))
+
+	BitmovinPrototype.__create = function(__closure) {
+		BitmovinBasePrototype.__create.call(this, __closure.__base = { })
+
+	}
+	BitmovinPrototype.__setup = function(__closure) {
+	BitmovinBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//assigning width to (640)
+			this._removeUpdater('width'); this.width = ((640));
+//assigning logsEnabled to (this._get('recursiveVisible'))
+			var update$this$logsEnabled = (function() { this.logsEnabled = ((this._get('recursiveVisible'))); }).bind(this)
+			var dep$this$logsEnabled$0 = this
+			this.connectOnChanged(dep$this$logsEnabled$0, 'recursiveVisible', update$this$logsEnabled)
+			this._removeUpdater('logsEnabled', [[dep$this$logsEnabled$0, 'recursiveVisible', update$this$logsEnabled]])
+			update$this$logsEnabled();
+//assigning height to (480)
+			this._removeUpdater('height'); this.height = ((480));
+}
+
+
 //=====[component core.BaseLayout]=====================
 
 	var BaseLayoutBaseComponent = _globals.core.Item
@@ -1530,6 +1498,73 @@ var core = _globals.core.core
 }
 
 
+//=====[component core.Column]=====================
+
+	var ColumnBaseComponent = _globals.core.Layout
+	var ColumnBasePrototype = ColumnBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Layout}
+ */
+	var ColumnComponent = _globals.core.Column = function(parent, _delegate) {
+		ColumnBaseComponent.apply(this, arguments)
+
+	}
+	var ColumnPrototype = ColumnComponent.prototype = Object.create(ColumnBasePrototype)
+
+	ColumnPrototype.constructor = ColumnComponent
+
+	ColumnPrototype.componentName = 'core.Column'
+	ColumnPrototype.addChild = function(child) {
+		_globals.core.Item.prototype.addChild.apply(this, arguments)
+
+		if (!('height' in child))
+			return
+
+		var delayedLayout = this._delayedLayout
+		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
+		child.anchors.on('marginsUpdated', delayedLayout.schedule.bind(delayedLayout))
+	}
+	ColumnPrototype._layout = function() {
+		if (!this.recursiveVisible)
+			return
+
+		var children = this.children;
+		var p = 0
+		var w = 0
+		this.count = children.length
+		for(var i = 0; i < children.length; ++i) {
+			var c = children[i]
+			if (!('height' in c))
+				continue
+
+			var tm = c.anchors.topMargin || c.anchors.margins
+			var bm = c.anchors.bottomMargin || c.anchors.margins
+
+			var r = c.x + c.width
+			if (r > w)
+				w = r
+			c.viewY = p + tm
+			if (c.recursiveVisible)
+				p += c.height + tm + bm + this.spacing
+		}
+		if (p > 0)
+			p -= this.spacing
+		this.contentWidth = w
+		this.contentHeight = p
+	}
+	_globals.core._protoOnKey(ColumnPrototype, 'Key', (function(key, event) {
+		if (!this.handleNavigationKeys)
+			return false;
+
+		switch (key) {
+			case 'Up':		this.focusPrevChild(); return true;
+			case 'Down':	this.focusNextChild(); return true;
+		}
+	} ))
+
 //=====[component core.Shadow]=====================
 
 	var ShadowBaseComponent = _globals.core.Object
@@ -1568,64 +1603,26 @@ var core = _globals.core.core
 	core.addProperty(ShadowPrototype, 'real', 'blur')
 	core.addProperty(ShadowPrototype, 'real', 'spread')
 
-//=====[component core.Row]=====================
+//=====[component core.BaseViewContent]=====================
 
-	var RowBaseComponent = _globals.core.Layout
-	var RowBasePrototype = RowBaseComponent.prototype
+	var BaseViewContentBaseComponent = _globals.core.Item
+	var BaseViewContentBasePrototype = BaseViewContentBaseComponent.prototype
 
 /**
  * @constructor
- * @extends {_globals.core.Layout}
+ * @extends {_globals.core.Item}
  */
-	var RowComponent = _globals.core.Row = function(parent, _delegate) {
-		RowBaseComponent.apply(this, arguments)
+	var BaseViewContentComponent = _globals.core.BaseViewContent = function(parent, _delegate) {
+		BaseViewContentBaseComponent.apply(this, arguments)
 
 	}
-	var RowPrototype = RowComponent.prototype = Object.create(RowBasePrototype)
+	var BaseViewContentPrototype = BaseViewContentComponent.prototype = Object.create(BaseViewContentBasePrototype)
 
-	RowPrototype.constructor = RowComponent
+	BaseViewContentPrototype.constructor = BaseViewContentComponent
 
-	RowPrototype.componentName = 'core.Row'
-	RowPrototype.addChild = function(child) {
-		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		var delayedLayout = this._delayedLayout
-		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
-		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
-		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
-	}
-	RowPrototype._layout = function() {
-		if (!this.recursiveVisible)
-			return
-
-		var children = this.children;
-		var p = 0
-		var h = 0
-		this.count = children.length
-		for(var i = 0; i < children.length; ++i) {
-			var c = children[i]
-			if (!('height' in c))
-				continue
-			var b = c.y + c.height
-			if (b > h)
-				h = b
-			c.viewX = p
-			if (c.recursiveVisible)
-				p += c.width + this.spacing
-		}
-		if (p > 0)
-			p -= this.spacing
-		this.contentWidth = p
-		this.contentHeight = h
-	}
-	_globals.core._protoOnKey(RowPrototype, 'Key', (function(key, event) {
-		if (!this.handleNavigationKeys)
-			return false;
-
-		switch(key) {
-			case 'Left':	this.focusPrevChild(); return true;
-			case 'Right':	this.focusNextChild(); return true;
-		}
-	} ))
+	BaseViewContentPrototype.componentName = 'core.BaseViewContent'
+	_globals.core._protoOnChanged(BaseViewContentPrototype, 'x', (function(value) { this.parent._delayedLayout.schedule() } ))
+	_globals.core._protoOnChanged(BaseViewContentPrototype, 'y', (function(value) { this.parent._delayedLayout.schedule() } ))
 
 //=====[component controls.core.Request]=====================
 
@@ -1717,72 +1714,506 @@ var core = _globals.core.core
 	core.addProperty(AnimationPrototype, 'bool', 'running', (false))
 	core.addProperty(AnimationPrototype, 'string', 'easing', ("ease"))
 
-//=====[component controls.web.HoverClickMixin]=====================
+//=====[component controls.input.BaseInput]=====================
 
-	var HoverClickMixinBaseComponent = _globals.core.Object
-	var HoverClickMixinBasePrototype = HoverClickMixinBaseComponent.prototype
+	var BaseInputBaseComponent = _globals.core.Item
+	var BaseInputBasePrototype = BaseInputBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Item}
+ */
+	var BaseInputComponent = _globals.controls.input.BaseInput = function(parent, _delegate) {
+		BaseInputBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this._placeholderClass = ''
+		this.element.on("focus", function() { this.activeFocus = true; }.bind(this))
+		this.element.on("blur", function() { this.activeFocus = false; }.bind(this))
+	}
+
+	}
+	var BaseInputPrototype = BaseInputComponent.prototype = Object.create(BaseInputBasePrototype)
+
+	BaseInputPrototype.constructor = BaseInputComponent
+
+	BaseInputPrototype.componentName = 'controls.input.BaseInput'
+	BaseInputPrototype._update = function(name,value) {
+		switch (name) {
+			case 'type': this.element.dom.type = value; break
+			case 'width': this._updateSize(); break
+			case 'height': this._updateSize(); break
+			case 'color': this.style('color', value); break
+			case 'backgroundColor': this.style('background', value); break
+			case 'horizontalAlignment':
+				switch(value) {
+				case this.AlignLeft:	this.style('text-align', 'left'); break
+				case this.AlignRight:	this.style('text-align', 'right'); break
+				case this.AlignHCenter:	this.style('text-align', 'center'); break
+				case this.AlignJustify:	this.style('text-align', 'justify'); break
+				}
+				break
+		}
+
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
+	BaseInputPrototype.getTag = function() { return 'input' }
+	BaseInputPrototype.registerStyle = function(style) {
+		style.addRule('input', "position: absolute; visibility: inherit; border-style: solid; border-width: 0px; box-sizing: border-box;")
+		style.addRule('input:focus', "outline: none;")
+	}
+	BaseInputPrototype._updateSize = function() {
+		var style = { width: this.width, height: this.height }
+		this.style(style)
+	}
+	core.addProperty(BaseInputPrototype, 'Paddings', 'paddings')
+	core.addProperty(BaseInputPrototype, 'Color', 'color', ("#000"))
+	core.addProperty(BaseInputPrototype, 'Color', 'backgroundColor', ("#fff"))
+	core.addProperty(BaseInputPrototype, 'Font', 'font')
+	core.addProperty(BaseInputPrototype, 'Border', 'border')
+	core.addProperty(BaseInputPrototype, 'string', 'type', ("text"))
+	core.addProperty(BaseInputPrototype, 'PlaceHolder', 'placeholder')
+/** @const @type {number} */
+	BaseInputPrototype.AlignLeft = 0
+/** @const @type {number} */
+	BaseInputComponent.AlignLeft = 0
+/** @const @type {number} */
+	BaseInputPrototype.AlignRight = 1
+/** @const @type {number} */
+	BaseInputComponent.AlignRight = 1
+/** @const @type {number} */
+	BaseInputPrototype.AlignHCenter = 2
+/** @const @type {number} */
+	BaseInputComponent.AlignHCenter = 2
+/** @const @type {number} */
+	BaseInputPrototype.Justify = 3
+/** @const @type {number} */
+	BaseInputComponent.Justify = 3
+	core.addProperty(BaseInputPrototype, 'enum', 'horizontalAlignment')
+	_globals.core._protoOnChanged(BaseInputPrototype, 'activeFocus', (function(value) {
+		if (value)
+			this.element.dom.select()
+		else
+			this.element.dom.blur()
+	} ))
+	_globals.core._protoOnChanged(BaseInputPrototype, 'recursiveVisible', (function(value) {
+		if (!value)
+			this.element.dom.blur()
+	} ))
+
+	BaseInputPrototype.__create = function(__closure) {
+		BaseInputBasePrototype.__create.call(this, __closure.__base = { })
+//creating component controls.input.<anonymous>
+		var this$placeholder = new _globals.controls.core.PlaceHolder(this)
+		__closure.this$placeholder = this$placeholder
+
+//creating component PlaceHolder
+		this$placeholder.__create(__closure.__closure_this$placeholder = { })
+
+		this.placeholder = this$placeholder
+//creating component controls.input.<anonymous>
+		var this$font = new _globals.core.Font(this)
+		__closure.this$font = this$font
+
+//creating component Font
+		this$font.__create(__closure.__closure_this$font = { })
+
+		this.font = this$font
+//creating component controls.input.<anonymous>
+		var this$border = new _globals.core.Border(this)
+		__closure.this$border = this$border
+
+//creating component Border
+		this$border.__create(__closure.__closure_this$border = { })
+
+		this.border = this$border
+//creating component controls.input.<anonymous>
+		var this$paddings = new _globals.controls.core.Paddings(this)
+		__closure.this$paddings = this$paddings
+
+//creating component Paddings
+		this$paddings.__create(__closure.__closure_this$paddings = { })
+
+		this.paddings = this$paddings
+	}
+	BaseInputPrototype.__setup = function(__closure) {
+	BaseInputBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//setting up component PlaceHolder
+			var this$placeholder = __closure.this$placeholder
+			this$placeholder.__setup(__closure.__closure_this$placeholder)
+			delete __closure.__closure_this$placeholder
+
+
+
+//setting up component Font
+			var this$font = __closure.this$font
+			this$font.__setup(__closure.__closure_this$font)
+			delete __closure.__closure_this$font
+
+
+
+//setting up component Border
+			var this$border = __closure.this$border
+			this$border.__setup(__closure.__closure_this$border)
+			delete __closure.__closure_this$border
+
+
+
+//setting up component Paddings
+			var this$paddings = __closure.this$paddings
+			this$paddings.__setup(__closure.__closure_this$paddings)
+			delete __closure.__closure_this$paddings
+}
+
+
+//=====[component controls.input.TextInput]=====================
+
+	var TextInputBaseComponent = _globals.controls.input.BaseInput
+	var TextInputBasePrototype = TextInputBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.controls.input.BaseInput}
+ */
+	var TextInputComponent = _globals.controls.input.TextInput = function(parent, _delegate) {
+		TextInputBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this.element.on("input", function() { this.text = this.element.dom.value }.bind(this))
+	}
+
+	}
+	var TextInputPrototype = TextInputComponent.prototype = Object.create(TextInputBasePrototype)
+
+	TextInputPrototype.constructor = TextInputComponent
+
+	TextInputPrototype.componentName = 'controls.input.TextInput'
+	TextInputPrototype._update = function(name,value) {
+		switch (name) {
+			case 'text': if (value != this.element.dom.value) this.element.dom.value = value; break
+		}
+		_globals.controls.input.BaseInput.prototype._update.apply(this, arguments);
+	}
+	core.addProperty(TextInputPrototype, 'string', 'text')
+	core.addProperty(TextInputPrototype, 'bool', 'passwordMode', (false))
+
+	TextInputPrototype.__create = function(__closure) {
+		TextInputBasePrototype.__create.call(this, __closure.__base = { })
+
+	}
+	TextInputPrototype.__setup = function(__closure) {
+	TextInputBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//assigning width to (173)
+			this._removeUpdater('width'); this.width = ((173));
+//assigning type to (this._get('passwordMode') ? "password" : "text")
+			var update$this$type = (function() { this.type = ((this._get('passwordMode') ? "password" : "text")); }).bind(this)
+			var dep$this$type$0 = this
+			this.connectOnChanged(dep$this$type$0, 'passwordMode', update$this$type)
+			this._removeUpdater('type', [[dep$this$type$0, 'passwordMode', update$this$type]])
+			update$this$type();
+//assigning height to (20)
+			this._removeUpdater('height'); this.height = ((20));
+}
+
+
+//=====[component core.System]=====================
+
+	var SystemBaseComponent = _globals.core.Object
+	var SystemBasePrototype = SystemBaseComponent.prototype
 
 /**
  * @constructor
  * @extends {_globals.core.Object}
  */
-	var HoverClickMixinComponent = _globals.controls.web.HoverClickMixin = function(parent, _delegate) {
-		HoverClickMixinBaseComponent.apply(this, arguments)
+	var SystemComponent = _globals.core.System = function(parent, _delegate) {
+		SystemBaseComponent.apply(this, arguments)
 	//custom constructor:
 	{
-		this.element = this.parent.element;
-		this.parent.style('cursor', this.cursor)
-		this._bindClick(this.clickable)
-		this._bindHover(this.enabled)
-		this._bindActiveHover(this.activeHoverEnabled)
+		var ctx = this._context
+		this.browser = _globals.core.browser
+		this.userAgent = _globals.core.userAgent
+		this.webkit = this.userAgent.toLowerCase().indexOf('webkit') >= 0
+		this.device = _globals.core.device
+		this.vendor = _globals.core.vendor
+		this.os = _globals.core.os
+		this.language = _globals.core.language
+		ctx.language = this.language.replace('-', '_')
+
+		this.support3dTransforms = ctx.backend.capabilities.csstransforms3d || false
+		this.supportTransforms = ctx.backend.capabilities.csstransforms || false
+		this.supportTransitions = ctx.backend.capabilities.csstransitions || false
+
+		this.screenWidth = window.screen.width
+		this.screenHeight = window.screen.height
 	}
 
 	}
-	var HoverClickMixinPrototype = HoverClickMixinComponent.prototype = Object.create(HoverClickMixinBasePrototype)
+	var SystemPrototype = SystemComponent.prototype = Object.create(SystemBasePrototype)
 
-	HoverClickMixinPrototype.constructor = HoverClickMixinComponent
+	SystemPrototype.constructor = SystemComponent
 
-	HoverClickMixinPrototype.componentName = 'controls.web.HoverClickMixin'
-	HoverClickMixinPrototype._bindActiveHover = function(value) {
-		if (value && !this._hmActiveHoverBinder) {
-			this._hmActiveHoverBinder = new _globals.core.EventBinder(this.parent.element)
-			this._hmActiveHoverBinder.on('mouseover', function() { this.activeHover = true }.bind(this))
-			this._hmActiveHoverBinder.on('mouseout', function() { this.activeHover = false }.bind(this))
-		}
-		if (this._hmActiveHoverBinder)
-		{
-			this._hmActiveHoverBinder.enable(value)
-		}
+	SystemPrototype.componentName = 'core.System'
+	SystemPrototype._updateLayoutType = function() {
+		if (!this.contextWidth || !this.contextHeight)
+			return
+		var min = this.contextWidth;// < this.contextHeight ? this.contextWidth : this.contextHeight
+
+		if (min <= 320)
+			this.layoutType = this.MobileS
+		else if (min <= 375)
+			this.layoutType = this.MobileM
+		else if (min <= 425)
+			this.layoutType = this.MobileL
+		else if (min <= 768)
+			this.layoutType = this.Tablet
+		else if (this.contextWidth <= 1024)
+			this.layoutType = this.Laptop
+		else if (this.contextWidth <= 1440)
+			this.layoutType = this.LaptopL
+		else
+			this.layoutType = this.Laptop4K
 	}
-	HoverClickMixinPrototype._bindClick = function(value) {
-		if (value && !this._hmClickBinder) {
-			this._hmClickBinder = new _globals.core.EventBinder(this.element)
-			this._hmClickBinder.on('click', _globals.core.createSignalForwarder(this.parent, 'clicked').bind(this))
-		}
-		if (this._hmClickBinder)
-			this._hmClickBinder.enable(value)
+	core.addProperty(SystemPrototype, 'string', 'userAgent')
+	core.addProperty(SystemPrototype, 'string', 'language')
+	core.addProperty(SystemPrototype, 'string', 'browser')
+	core.addProperty(SystemPrototype, 'string', 'vendor')
+	core.addProperty(SystemPrototype, 'string', 'os')
+	core.addProperty(SystemPrototype, 'bool', 'webkit')
+	core.addProperty(SystemPrototype, 'bool', 'support3dTransforms')
+	core.addProperty(SystemPrototype, 'bool', 'supportTransforms')
+	core.addProperty(SystemPrototype, 'bool', 'supportTransitions')
+	core.addProperty(SystemPrototype, 'bool', 'portrait')
+	core.addProperty(SystemPrototype, 'bool', 'landscape')
+	core.addProperty(SystemPrototype, 'bool', 'pageActive', (true))
+	core.addProperty(SystemPrototype, 'int', 'screenWidth')
+	core.addProperty(SystemPrototype, 'int', 'screenHeight')
+	core.addProperty(SystemPrototype, 'int', 'contextWidth')
+	core.addProperty(SystemPrototype, 'int', 'contextHeight')
+/** @const @type {number} */
+	SystemPrototype.Desktop = 0
+/** @const @type {number} */
+	SystemComponent.Desktop = 0
+/** @const @type {number} */
+	SystemPrototype.Tv = 1
+/** @const @type {number} */
+	SystemComponent.Tv = 1
+/** @const @type {number} */
+	SystemPrototype.Mobile = 2
+/** @const @type {number} */
+	SystemComponent.Mobile = 2
+	core.addProperty(SystemPrototype, 'enum', 'device')
+/** @const @type {number} */
+	SystemPrototype.MobileS = 0
+/** @const @type {number} */
+	SystemComponent.MobileS = 0
+/** @const @type {number} */
+	SystemPrototype.MobileM = 1
+/** @const @type {number} */
+	SystemComponent.MobileM = 1
+/** @const @type {number} */
+	SystemPrototype.MobileL = 2
+/** @const @type {number} */
+	SystemComponent.MobileL = 2
+/** @const @type {number} */
+	SystemPrototype.Tablet = 3
+/** @const @type {number} */
+	SystemComponent.Tablet = 3
+/** @const @type {number} */
+	SystemPrototype.Laptop = 4
+/** @const @type {number} */
+	SystemComponent.Laptop = 4
+/** @const @type {number} */
+	SystemPrototype.LaptopL = 5
+/** @const @type {number} */
+	SystemComponent.LaptopL = 5
+/** @const @type {number} */
+	SystemPrototype.Laptop4K = 6
+/** @const @type {number} */
+	SystemComponent.Laptop4K = 6
+	core.addProperty(SystemPrototype, 'enum', 'layoutType')
+	_globals.core._protoOnChanged(SystemPrototype, 'contextHeight', (function(value) { this._updateLayoutType() } ))
+	_globals.core._protoOnChanged(SystemPrototype, 'contextWidth', (function(value) { this._updateLayoutType() } ))
+
+	SystemPrototype.__create = function(__closure) {
+		SystemBasePrototype.__create.call(this, __closure.__base = { })
+
 	}
-	HoverClickMixinPrototype._bindHover = function(value) {
-		if (value && !this._hmHoverBinder) {
-			this._hmHoverBinder = new _globals.core.EventBinder(this.parent.element)
-			this._hmHoverBinder.on('mouseenter', function() { this.value = true }.bind(this))
-			this._hmHoverBinder.on('mouseleave', function() { this.value = false }.bind(this))
-		}
-		if (this._hmHoverBinder)
-			this._hmHoverBinder.enable(value)
+	SystemPrototype.__setup = function(__closure) {
+	SystemBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//assigning portrait to (this._get('parent')._get('width') < this._get('parent')._get('height'))
+			var update$this$portrait = (function() { this.portrait = ((this._get('parent')._get('width') < this._get('parent')._get('height'))); }).bind(this)
+			var dep$this$portrait$0 = this._get('parent')
+			this.connectOnChanged(dep$this$portrait$0, 'height', update$this$portrait)
+			var dep$this$portrait$1 = this._get('parent')
+			this.connectOnChanged(dep$this$portrait$1, 'width', update$this$portrait)
+			this._removeUpdater('portrait', [[dep$this$portrait$0, 'height', update$this$portrait],[dep$this$portrait$1, 'width', update$this$portrait]])
+			update$this$portrait();
+//assigning contextWidth to (this._get('context')._get('width'))
+			var update$this$contextWidth = (function() { this.contextWidth = ((this._get('context')._get('width'))); }).bind(this)
+			var dep$this$contextWidth$0 = this._get('context')
+			this.connectOnChanged(dep$this$contextWidth$0, 'width', update$this$contextWidth)
+			this._removeUpdater('contextWidth', [[dep$this$contextWidth$0, 'width', update$this$contextWidth]])
+			update$this$contextWidth();
+//assigning landscape to (! this._get('portrait'))
+			var update$this$landscape = (function() { this.landscape = ((! this._get('portrait'))); }).bind(this)
+			var dep$this$landscape$0 = this
+			this.connectOnChanged(dep$this$landscape$0, 'portrait', update$this$landscape)
+			this._removeUpdater('landscape', [[dep$this$landscape$0, 'portrait', update$this$landscape]])
+			update$this$landscape();
+//assigning contextHeight to (this._get('context')._get('height'))
+			var update$this$contextHeight = (function() { this.contextHeight = ((this._get('context')._get('height'))); }).bind(this)
+			var dep$this$contextHeight$0 = this._get('context')
+			this.connectOnChanged(dep$this$contextHeight$0, 'height', update$this$contextHeight)
+			this._removeUpdater('contextHeight', [[dep$this$contextHeight$0, 'height', update$this$contextHeight]])
+			update$this$contextHeight();
+}
+
+
+//=====[component controls.core.Paddings]=====================
+
+	var PaddingsBaseComponent = _globals.core.Object
+	var PaddingsBasePrototype = PaddingsBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Object}
+ */
+	var PaddingsComponent = _globals.controls.core.Paddings = function(parent, _delegate) {
+		PaddingsBaseComponent.apply(this, arguments)
+
 	}
-	core.addProperty(HoverClickMixinPrototype, 'bool', 'enabled', (true))
-	core.addProperty(HoverClickMixinPrototype, 'bool', 'clickable', (true))
-	core.addProperty(HoverClickMixinPrototype, 'bool', 'activeHoverEnabled', (false))
-	core.addProperty(HoverClickMixinPrototype, 'bool', 'value')
-	core.addProperty(HoverClickMixinPrototype, 'bool', 'activeHover', (false))
-	core.addProperty(HoverClickMixinPrototype, 'string', 'cursor')
-	_globals.core._protoOnChanged(HoverClickMixinPrototype, 'clickable', (function(value) { this._bindClick(value) } ))
-	_globals.core._protoOnChanged(HoverClickMixinPrototype, 'cursor', (function(value) {
-		this.parent.style('cursor', value)
+	var PaddingsPrototype = PaddingsComponent.prototype = Object.create(PaddingsBasePrototype)
+
+	PaddingsPrototype.constructor = PaddingsComponent
+
+	PaddingsPrototype.componentName = 'controls.core.Paddings'
+	PaddingsPrototype._update = function(name,value) {
+		switch(name) {
+			case 'left': this.parent.style('padding-left', value); break;
+			case 'right': this.parent.style('padding-right', value); break;
+			case 'top': this.parent.style('padding-top', value); break;
+			case 'bottom': this.parent.style('padding-bottom', value); break;
+		}
+		_globals.core.Object.prototype._update.apply(this, arguments)
+	}
+	core.addProperty(PaddingsPrototype, 'int', 'left')
+	core.addProperty(PaddingsPrototype, 'int', 'right')
+	core.addProperty(PaddingsPrototype, 'int', 'top')
+	core.addProperty(PaddingsPrototype, 'int', 'bottom')
+	core.addProperty(PaddingsPrototype, 'int', 'all')
+
+	PaddingsPrototype.__create = function(__closure) {
+		PaddingsBasePrototype.__create.call(this, __closure.__base = { })
+
+	}
+	PaddingsPrototype.__setup = function(__closure) {
+	PaddingsBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//assigning top to (this._get('all'))
+			var update$this$top = (function() { this.top = ((this._get('all'))); }).bind(this)
+			var dep$this$top$0 = this
+			this.connectOnChanged(dep$this$top$0, 'all', update$this$top)
+			this._removeUpdater('top', [[dep$this$top$0, 'all', update$this$top]])
+			update$this$top();
+//assigning right to (this._get('all'))
+			var update$this$right = (function() { this.right = ((this._get('all'))); }).bind(this)
+			var dep$this$right$0 = this
+			this.connectOnChanged(dep$this$right$0, 'all', update$this$right)
+			this._removeUpdater('right', [[dep$this$right$0, 'all', update$this$right]])
+			update$this$right();
+//assigning bottom to (this._get('all'))
+			var update$this$bottom = (function() { this.bottom = ((this._get('all'))); }).bind(this)
+			var dep$this$bottom$0 = this
+			this.connectOnChanged(dep$this$bottom$0, 'all', update$this$bottom)
+			this._removeUpdater('bottom', [[dep$this$bottom$0, 'all', update$this$bottom]])
+			update$this$bottom();
+//assigning left to (this._get('all'))
+			var update$this$left = (function() { this.left = ((this._get('all'))); }).bind(this)
+			var dep$this$left$0 = this
+			this.connectOnChanged(dep$this$left$0, 'all', update$this$left)
+			this._removeUpdater('left', [[dep$this$left$0, 'all', update$this$left]])
+			update$this$left();
+}
+
+
+//=====[component controls.TheOPlayer]=====================
+
+	var TheOPlayerBaseComponent = _globals.core.Item
+	var TheOPlayerBasePrototype = TheOPlayerBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Item}
+ */
+	var TheOPlayerComponent = _globals.controls.TheOPlayer = function(parent, _delegate) {
+		TheOPlayerBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this.element.setAttribute('class', 'theoplayer-container video-js theoplayer-skin theo-seekbar-above-controls')
+
+		var element = document.querySelector('.theoplayer-container'); 
+		this._player = new window.THEOplayer.Player(element, { 
+			libraryLocation : '/'
+		});
+
+		this._player.source = {
+			sources : [{
+				src : '//cdn.theoplayer.com/video/star_wars_episode_vii-the_force_awakens_official_comic-con_2015_reel_(2015)/index.m3u8',
+				type : 'application/x-mpegurl'
+			}]
+		};
+	}
+
+	}
+	var TheOPlayerPrototype = TheOPlayerComponent.prototype = Object.create(TheOPlayerBasePrototype)
+
+	TheOPlayerPrototype.constructor = TheOPlayerComponent
+
+	TheOPlayerPrototype.componentName = 'controls.TheOPlayer'
+	TheOPlayerPrototype.finished = _globals.core.createSignal('finished')
+	TheOPlayerPrototype.error = _globals.core.createSignal('error')
+	TheOPlayerPrototype.play = function(state) {
+		// this._player.play(state)
+	}
+	TheOPlayerPrototype.loadPlaylist = function(pl) {
+
+	}
+	core.addProperty(TheOPlayerPrototype, 'string', 'source')
+	core.addProperty(TheOPlayerPrototype, 'Color', 'backgroundColor', ("#000"))
+	core.addProperty(TheOPlayerPrototype, 'float', 'volume', (1.0))
+	core.addProperty(TheOPlayerPrototype, 'bool', 'loop', (false))
+	core.addProperty(TheOPlayerPrototype, 'bool', 'ready', (false))
+	core.addProperty(TheOPlayerPrototype, 'bool', 'muted', (false))
+	core.addProperty(TheOPlayerPrototype, 'bool', 'paused', (false))
+	core.addProperty(TheOPlayerPrototype, 'bool', 'waiting', (false))
+	core.addProperty(TheOPlayerPrototype, 'bool', 'seeking', (false))
+	core.addProperty(TheOPlayerPrototype, 'bool', 'autoPlay', (false))
+	core.addProperty(TheOPlayerPrototype, 'int', 'duration')
+	core.addProperty(TheOPlayerPrototype, 'int', 'progress')
+	core.addProperty(TheOPlayerPrototype, 'int', 'buffered')
+	core.addProperty(TheOPlayerPrototype, 'bool', 'logsEnabled')
+	_globals.core._protoOnChanged(TheOPlayerPrototype, 'source', (function(value) {
 	} ))
-	_globals.core._protoOnChanged(HoverClickMixinPrototype, 'activeHoverEnabled', (function(value) { this._bindActiveHover(value) } ))
-	_globals.core._protoOnChanged(HoverClickMixinPrototype, 'enabled', (function(value) { this._bindHover(value) } ))
+	_globals.core._protoOnChanged(TheOPlayerPrototype, 'width', (function(value) { this.element.dom.width = value; } ))
+	_globals.core._protoOnChanged(TheOPlayerPrototype, 'height', (function(value) { this.element.dom.height = value; } ))
+
+	TheOPlayerPrototype.__create = function(__closure) {
+		TheOPlayerBasePrototype.__create.call(this, __closure.__base = { })
+
+	}
+	TheOPlayerPrototype.__setup = function(__closure) {
+	TheOPlayerBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//assigning width to (640)
+			this._removeUpdater('width'); this.width = ((640));
+//assigning logsEnabled to (this._get('recursiveVisible'))
+			var update$this$logsEnabled = (function() { this.logsEnabled = ((this._get('recursiveVisible'))); }).bind(this)
+			var dep$this$logsEnabled$0 = this
+			this.connectOnChanged(dep$this$logsEnabled$0, 'recursiveVisible', update$this$logsEnabled)
+			this._removeUpdater('logsEnabled', [[dep$this$logsEnabled$0, 'recursiveVisible', update$this$logsEnabled]])
+			update$this$logsEnabled();
+//assigning height to (480)
+			this._removeUpdater('height'); this.height = ((480));
+}
+
 
 //=====[component src.UiApp]=====================
 
@@ -1810,48 +2241,212 @@ var this$child0 = new _globals.controls.core.Resource(this)
 
 //creating component Resource
 		this$child0.__create(__closure.__closure_this$child0 = { })
-
-		var this$child1 = new _globals.core.Row(this)
+		this$child0._setId('resource')
+		var this$child1 = new _globals.controls.input.TextInput(this)
 		__closure.this$child1 = this$child1
 
-//creating component Row
+//creating component TextInput
 		this$child1.__create(__closure.__closure_this$child1 = { })
-	core.addProperty(this$child1, 'string', 'currentPage')
-		var this_child1$child0 = new _globals.src.TextButton(this$child1)
-		__closure.this_child1$child0 = this_child1$child0
 
-//creating component TextButton
-		this_child1$child0.__create(__closure.__closure_this_child1$child0 = { })
-
-		var this_child1$child1 = new _globals.src.TextButton(this$child1)
-		__closure.this_child1$child1 = this_child1$child1
-
-//creating component TextButton
-		this_child1$child1.__create(__closure.__closure_this_child1$child1 = { })
-
-		var this_child1$child2 = new _globals.src.TextButton(this$child1)
-		__closure.this_child1$child2 = this_child1$child2
-
-//creating component TextButton
-		this_child1$child2.__create(__closure.__closure_this_child1$child2 = { })
-
-		this$child1._setId('menu')
-		var this$child2 = new _globals.core.Rectangle(this)
+		var this$child2 = new _globals.core.Column(this)
 		__closure.this$child2 = this$child2
 
-//creating component Rectangle
+//creating component Column
 		this$child2.__create(__closure.__closure_this$child2 = { })
-		var this_child2$child0 = new _globals.controls.ShakaPlayer(this$child2)
+		var this_child2$child0 = new _globals.src.TextButton(this$child2)
 		__closure.this_child2$child0 = this_child2$child0
 
-//creating component ShakaPlayer
+//creating component TextButton
 		this_child2$child0.__create(__closure.__closure_this_child2$child0 = { })
 
-		var this_child2$child1 = new _globals.controls.JWPlayer(this$child2)
+		var this_child2$child1 = new _globals.controls.ShakaPlayer(this$child2)
 		__closure.this_child2$child1 = this_child2$child1
 
-//creating component JWPlayer
+//creating component ShakaPlayer
 		this_child2$child1.__create(__closure.__closure_this_child2$child1 = { })
+		this_child2$child1._setId('shakap')
+		var this_child2$child2 = new _globals.src.TextButton(this$child2)
+		__closure.this_child2$child2 = this_child2$child2
+
+//creating component TextButton
+		this_child2$child2.__create(__closure.__closure_this_child2$child2 = { })
+
+		var this_child2$child3 = new _globals.core.Item(this$child2)
+		__closure.this_child2$child3 = this_child2$child3
+
+//creating component Item
+		this_child2$child3.__create(__closure.__closure_this_child2$child3 = { })
+		var this_child2_child3$child0 = new _globals.controls.JWPlayer(this_child2$child3)
+		__closure.this_child2_child3$child0 = this_child2_child3$child0
+
+//creating component JWPlayer
+		this_child2_child3$child0.__create(__closure.__closure_this_child2_child3$child0 = { })
+		this_child2_child3$child0._setId('jwp')
+		var this_child2$child4 = new _globals.src.TextButton(this$child2)
+		__closure.this_child2$child4 = this_child2$child4
+
+//creating component TextButton
+		this_child2$child4.__create(__closure.__closure_this_child2$child4 = { })
+
+		var this_child2$child5 = new _globals.core.Item(this$child2)
+		__closure.this_child2$child5 = this_child2$child5
+
+//creating component Item
+		this_child2$child5.__create(__closure.__closure_this_child2$child5 = { })
+		var this_child2_child5$child0 = new _globals.controls.Bitmovin(this_child2$child5)
+		__closure.this_child2_child5$child0 = this_child2_child5$child0
+
+//creating component Bitmovin
+		this_child2_child5$child0.__create(__closure.__closure_this_child2_child5$child0 = { })
+		this_child2_child5$child0._setId('btm')
+		var this_child2$child6 = new _globals.src.TextButton(this$child2)
+		__closure.this_child2$child6 = this_child2$child6
+
+//creating component TextButton
+		this_child2$child6.__create(__closure.__closure_this_child2$child6 = { })
+
+		var this_child2$child7 = new _globals.core.Item(this$child2)
+		__closure.this_child2$child7 = this_child2$child7
+
+//creating component Item
+		this_child2$child7.__create(__closure.__closure_this_child2$child7 = { })
+		var this_child2_child7$child0 = new _globals.controls.TheOPlayer(this_child2$child7)
+		__closure.this_child2_child7$child0 = this_child2_child7$child0
+
+//creating component TheOPlayer
+		this_child2_child7$child0.__create(__closure.__closure_this_child2_child7$child0 = { })
+		this_child2_child7$child0._setId('theo')
+		var this_child2$child8 = new _globals.src.TextButton(this$child2)
+		__closure.this_child2$child8 = this_child2$child8
+
+//creating component TextButton
+		this_child2$child8.__create(__closure.__closure_this_child2$child8 = { })
+
+		var this_child2$child9 = new _globals.core.Item(this$child2)
+		__closure.this_child2$child9 = this_child2$child9
+
+//creating component Item
+		this_child2$child9.__create(__closure.__closure_this_child2$child9 = { })
+		var this_child2_child9$child0 = new _globals.controls.VideoJS(this_child2$child9)
+		__closure.this_child2_child9$child0 = this_child2_child9$child0
+
+//creating component VideoJS
+		this_child2_child9$child0.__create(__closure.__closure_this_child2_child9$child0 = { })
+		this_child2_child9$child0._setId('vjs')
+		this$child2._setId('playerRect')
+		var this$child3 = new _globals.core.Rectangle(this)
+		__closure.this$child3 = this$child3
+
+//creating component Rectangle
+		this$child3.__create(__closure.__closure_this$child3 = { })
+		var this_child3$child0 = new _globals.controls.mixins.OverflowMixin(this$child3)
+		__closure.this_child3$child0 = this_child3$child0
+
+//creating component OverflowMixin
+		this_child3$child0.__create(__closure.__closure_this_child3$child0 = { })
+
+		var this_child3$child1 = new _globals.core.ListView(this$child3)
+		__closure.this_child3$child1 = this_child3$child1
+
+//creating component ListView
+		this_child3$child1.__create(__closure.__closure_this_child3$child1 = { })
+		this_child3$child1.delegate = (function(__parent) {
+		var delegate = new _globals.controls.web.WebItem(__parent, true)
+		var __closure = { delegate: delegate }
+
+//creating component WebItem
+			delegate.__create(__closure.__closure_delegate = { })
+	core.addProperty(delegate, 'string', 'videoUrl')
+			var delegate$child0 = new _globals.core.Image(delegate)
+			__closure.delegate$child0 = delegate$child0
+
+//creating component Image
+			delegate$child0.__create(__closure.__closure_delegate$child0 = { })
+
+			var delegate$child1 = new _globals.core.Text(delegate)
+			__closure.delegate$child1 = delegate$child1
+
+//creating component Text
+			delegate$child1.__create(__closure.__closure_delegate$child1 = { })
+
+
+//setting up component WebItem
+			var delegate = __closure.delegate
+			delegate.__setup(__closure.__closure_delegate)
+			delete __closure.__closure_delegate
+
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$delegate$width = (function() { delegate.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(delegate)
+			var dep$delegate$width$0 = delegate._get('parent')
+			delegate.connectOnChanged(dep$delegate$width$0, 'width', update$delegate$width)
+			delegate._removeUpdater('width', [[dep$delegate$width$0, 'width', update$delegate$width]])
+			update$delegate$width();
+//assigning videoUrl to (this._get('model').file)
+			var update$delegate$videoUrl = (function() { delegate.videoUrl = ((this._get('model').file)); }).bind(delegate)
+			var dep$delegate$videoUrl$0 = delegate._get('_delegate')
+			delegate.connectOnChanged(dep$delegate$videoUrl$0, '_row', update$delegate$videoUrl)
+			delegate._removeUpdater('videoUrl', [[dep$delegate$videoUrl$0, '_row', update$delegate$videoUrl]])
+			update$delegate$videoUrl();
+//assigning height to (100)
+			delegate._removeUpdater('height'); delegate.height = ((100));
+			delegate.on('clicked', (function() {
+					this._get('btm').source = this.videoUrl;
+				} ).bind(delegate))
+
+
+//setting up component Image
+			var delegate$child0 = __closure.delegate$child0
+			delegate$child0.__setup(__closure.__closure_delegate$child0)
+			delete __closure.__closure_delegate$child0
+
+//assigning source to (this._get('model').image)
+			var update$delegate_child0$source = (function() { delegate$child0.source = ((this._get('model').image)); }).bind(delegate$child0)
+			var dep$delegate_child0$source$0 = delegate$child0._get('_delegate')
+			delegate$child0.connectOnChanged(dep$delegate_child0$source$0, '_row', update$delegate_child0$source)
+			delegate$child0._removeUpdater('source', [[dep$delegate_child0$source$0, '_row', update$delegate_child0$source]])
+			update$delegate_child0$source();
+//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
+			var update$delegate_child0$height = (function() { delegate$child0.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(delegate$child0)
+			var dep$delegate_child0$height$0 = delegate$child0._get('parent')
+			delegate$child0.connectOnChanged(dep$delegate_child0$height$0, 'height', update$delegate_child0$height)
+			delegate$child0._removeUpdater('height', [[dep$delegate_child0$height$0, 'height', update$delegate_child0$height]])
+			update$delegate_child0$height();
+
+			delegate.addChild(delegate$child0)
+
+//setting up component Text
+			var delegate$child1 = __closure.delegate$child1
+			delegate$child1.__setup(__closure.__closure_delegate$child1)
+			delete __closure.__closure_delegate$child1
+
+//assigning y to (10)
+			delegate$child1._removeUpdater('y'); delegate$child1.y = ((10));
+//assigning x to (this._get('parent')._get('height') * 2)
+			var update$delegate_child1$x = (function() { delegate$child1.x = ((this._get('parent')._get('height') * 2)); }).bind(delegate$child1)
+			var dep$delegate_child1$x$0 = delegate$child1._get('parent')
+			delegate$child1.connectOnChanged(dep$delegate_child1$x$0, 'height', update$delegate_child1$x)
+			delegate$child1._removeUpdater('x', [[dep$delegate_child1$x$0, 'height', update$delegate_child1$x]])
+			update$delegate_child1$x();
+//assigning text to (this._get('model').title)
+			var update$delegate_child1$text = (function() { delegate$child1.text = ((this._get('model').title)); }).bind(delegate$child1)
+			var dep$delegate_child1$text$0 = delegate$child1._get('_delegate')
+			delegate$child1.connectOnChanged(dep$delegate_child1$text$0, '_row', update$delegate_child1$text)
+			delegate$child1._removeUpdater('text', [[dep$delegate_child1$text$0, '_row', update$delegate_child1$text]])
+			update$delegate_child1$text();
+
+			delegate.addChild(delegate$child1)
+
+		return delegate
+})
+//creating component src.<anonymous>
+		var this_child3_child1$model = new _globals.core.ListModel(this_child3$child1)
+		__closure.this_child3_child1$model = this_child3_child1$model
+
+//creating component ListModel
+		this_child3_child1$model.__create(__closure.__closure_this_child3_child1$model = { })
+
+		this_child3$child1.model = this_child3_child1$model
+		this_child3$child1._setId('plView')
 	}
 	UiAppPrototype.__setup = function(__closure) {
 	UiAppBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
@@ -1868,82 +2463,84 @@ var this$child0 = new _globals.controls.core.Resource(this)
 			this$child0.__setup(__closure.__closure_this$child0)
 			delete __closure.__closure_this$child0
 
-//assigning url to ("")
-			this$child0._removeUpdater('url'); this$child0.url = ((""));
+			this$child0.onChanged('data', (function(value) {
+			var playlist = [];
+			var plModel = []
+			var obj = JSON.parse(value);
+			log(obj)
+			var items = obj.items[0].items;
+			for (var index in items)
+			{
+				let item = items[index]
+				playlist.push({
+					title: item.title,
+					file: item.video_src,
+					image: '\"' + item.packshot.image_1x + '\"',
+					description: item.description 
+					})
+				plModel.push({
+					title: item.title,
+					file: item.video_src,
+					image: item.packshot.image_1x,
+					description: item.description 
+					})
+
+			}
+
+			log("playlist", playlist)
+
+			this._get('jwp').loadPlaylist(playlist)
+
+			this._get('btm').source = playlist[0].file
+
+			this._get('plView').model.append(plModel)
+
+		} ).bind(this$child0))
 
 			this.addChild(this$child0)
 
-//setting up component Row
+//setting up component TextInput
 			var this$child1 = __closure.this$child1
 			this$child1.__setup(__closure.__closure_this$child1)
 			delete __closure.__closure_this$child1
 
 //assigning y to (20)
 			this$child1._removeUpdater('y'); this$child1.y = ((20));
-//assigning anchors.horizontalCenter to (this._get('parent')._get('horizontalCenter'))
-			var update$this_child1$anchors_horizontalCenter = (function() { this$child1._get('anchors').horizontalCenter = ((this._get('parent')._get('horizontalCenter'))); }).bind(this$child1)
-			var dep$this_child1$anchors_horizontalCenter$0 = this$child1._get('parent')
-			this$child1.connectOnChanged(dep$this_child1$anchors_horizontalCenter$0, 'horizontalCenter', update$this_child1$anchors_horizontalCenter)
-			this$child1._removeUpdater('anchors.horizontalCenter', [[dep$this_child1$anchors_horizontalCenter$0, 'horizontalCenter', update$this_child1$anchors_horizontalCenter]])
-			update$this_child1$anchors_horizontalCenter();
-//assigning spacing to (20)
-			this$child1._removeUpdater('spacing'); this$child1.spacing = ((20));
+//assigning x to ((this._get('parent')._get('width') * ((5) / 100)))
+			var update$this_child1$x = (function() { this$child1.x = (((this._get('parent')._get('width') * ((5) / 100)))); }).bind(this$child1)
+			var dep$this_child1$x$0 = this$child1._get('parent')
+			this$child1.connectOnChanged(dep$this_child1$x$0, 'width', update$this_child1$x)
+			this$child1._removeUpdater('x', [[dep$this_child1$x$0, 'width', update$this_child1$x]])
+			update$this_child1$x();
+//assigning placeholder.text to ("Series test URL")
+			this$child1._removeUpdater('placeholder.text'); this$child1._get('placeholder').text = (("Series test URL"));
+//assigning width to ((this._get('parent')._get('width') * ((90) / 100)))
+			var update$this_child1$width = (function() { this$child1.width = (((this._get('parent')._get('width') * ((90) / 100)))); }).bind(this$child1)
+			var dep$this_child1$width$0 = this$child1._get('parent')
+			this$child1.connectOnChanged(dep$this_child1$width$0, 'width', update$this_child1$width)
+			this$child1._removeUpdater('width', [[dep$this_child1$width$0, 'width', update$this_child1$width]])
+			update$this_child1$width();
+			this$child1.onChanged('text', (function(value) {
+			this._get('resource').url = value;
+		} ).bind(this$child1))
 
-
-//setting up component TextButton
-			var this_child1$child0 = __closure.this_child1$child0
-			this_child1$child0.__setup(__closure.__closure_this_child1$child0)
-			delete __closure.__closure_this_child1$child0
-
-//assigning text to ("Shaka-Player")
-			this_child1$child0._removeUpdater('text'); this_child1$child0.text = (("Shaka-Player"));
-//assigning page to ("shaka")
-			this_child1$child0._removeUpdater('page'); this_child1$child0.page = (("shaka"));
-
-			this$child1.addChild(this_child1$child0)
-
-//setting up component TextButton
-			var this_child1$child1 = __closure.this_child1$child1
-			this_child1$child1.__setup(__closure.__closure_this_child1$child1)
-			delete __closure.__closure_this_child1$child1
-
-//assigning text to ("JWPlayer")
-			this_child1$child1._removeUpdater('text'); this_child1$child1.text = (("JWPlayer"));
-//assigning page to ("jw")
-			this_child1$child1._removeUpdater('page'); this_child1$child1.page = (("jw"));
-
-			this$child1.addChild(this_child1$child1)
-
-//setting up component TextButton
-			var this_child1$child2 = __closure.this_child1$child2
-			this_child1$child2.__setup(__closure.__closure_this_child1$child2)
-			delete __closure.__closure_this_child1$child2
-
-//assigning text to ("VideoJS")
-			this_child1$child2._removeUpdater('text'); this_child1$child2.text = (("VideoJS"));
-//assigning page to ("vjs")
-			this_child1$child2._removeUpdater('page'); this_child1$child2.page = (("vjs"));
-
-			this$child1.addChild(this_child1$child2)
 			this.addChild(this$child1)
 
-//setting up component Rectangle
+//setting up component Column
 			var this$child2 = __closure.this$child2
 			this$child2.__setup(__closure.__closure_this$child2)
 			delete __closure.__closure_this$child2
 
-//assigning color to ("#CCCCCC")
-			this$child2._removeUpdater('color'); this$child2.color = (("#CCCCCC"));
-//assigning width to ((this._get('parent')._get('width') * ((90) / 100)))
-			var update$this_child2$width = (function() { this$child2.width = (((this._get('parent')._get('width') * ((90) / 100)))); }).bind(this$child2)
+//assigning y to (80)
+			this$child2._removeUpdater('y'); this$child2.y = ((80));
+//assigning width to ((this._get('parent')._get('width') * ((60) / 100)))
+			var update$this_child2$width = (function() { this$child2.width = (((this._get('parent')._get('width') * ((60) / 100)))); }).bind(this$child2)
 			var dep$this_child2$width$0 = this$child2._get('parent')
 			this$child2.connectOnChanged(dep$this_child2$width$0, 'width', update$this_child2$width)
 			this$child2._removeUpdater('width', [[dep$this_child2$width$0, 'width', update$this_child2$width]])
 			update$this_child2$width();
-//assigning height to (600)
-			this$child2._removeUpdater('height'); this$child2.height = ((600));
-//assigning y to (80)
-			this$child2._removeUpdater('y'); this$child2.y = ((80));
+//assigning spacing to (20)
+			this$child2._removeUpdater('spacing'); this$child2.spacing = ((20));
 //assigning x to ((this._get('parent')._get('width') * ((5) / 100)))
 			var update$this_child2$x = (function() { this$child2.x = (((this._get('parent')._get('width') * ((5) / 100)))); }).bind(this$child2)
 			var dep$this_child2$x$0 = this$child2._get('parent')
@@ -1952,106 +2549,400 @@ var this$child0 = new _globals.controls.core.Resource(this)
 			update$this_child2$x();
 
 
-//setting up component ShakaPlayer
+//setting up component TextButton
 			var this_child2$child0 = __closure.this_child2$child0
 			this_child2$child0.__setup(__closure.__closure_this_child2$child0)
 			delete __closure.__closure_this_child2$child0
 
-//assigning visible to (this._get('menu')._get('currentPage') === "shaka")
-			var update$this_child2_child0$visible = (function() { this_child2$child0.visible = ((this._get('menu')._get('currentPage') === "shaka")); }).bind(this_child2$child0)
-			var dep$this_child2_child0$visible$0 = this_child2$child0._get('menu')
-			this_child2$child0.connectOnChanged(dep$this_child2_child0$visible$0, 'currentPage', update$this_child2_child0$visible)
-			this_child2$child0._removeUpdater('visible', [[dep$this_child2_child0$visible$0, 'currentPage', update$this_child2_child0$visible]])
-			update$this_child2_child0$visible();
-//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
-			var update$this_child2_child0$height = (function() { this_child2$child0.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(this_child2$child0)
-			var dep$this_child2_child0$height$0 = this_child2$child0._get('parent')
-			this_child2$child0.connectOnChanged(dep$this_child2_child0$height$0, 'height', update$this_child2_child0$height)
-			this_child2$child0._removeUpdater('height', [[dep$this_child2_child0$height$0, 'height', update$this_child2_child0$height]])
-			update$this_child2_child0$height();
-//assigning source to ("http://content.jwplatform.com/videos/SJnBN5W3-mjpS2Ylx.mp4")
-			this_child2$child0._removeUpdater('source'); this_child2$child0.source = (("http://content.jwplatform.com/videos/SJnBN5W3-mjpS2Ylx.mp4"));
-//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
-			var update$this_child2_child0$width = (function() { this_child2$child0.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2$child0)
-			var dep$this_child2_child0$width$0 = this_child2$child0._get('parent')
-			this_child2$child0.connectOnChanged(dep$this_child2_child0$width$0, 'width', update$this_child2_child0$width)
-			this_child2$child0._removeUpdater('width', [[dep$this_child2_child0$width$0, 'width', update$this_child2_child0$width]])
-			update$this_child2_child0$width();
+//assigning text to ("Shaka-Player")
+			this_child2$child0._removeUpdater('text'); this_child2$child0.text = (("Shaka-Player"));
 
 			this$child2.addChild(this_child2$child0)
 
-//setting up component JWPlayer
+//setting up component ShakaPlayer
 			var this_child2$child1 = __closure.this_child2$child1
 			this_child2$child1.__setup(__closure.__closure_this_child2$child1)
 			delete __closure.__closure_this_child2$child1
 
-//assigning visible to (this._get('menu')._get('currentPage') === "jw")
-			var update$this_child2_child1$visible = (function() { this_child2$child1.visible = ((this._get('menu')._get('currentPage') === "jw")); }).bind(this_child2$child1)
-			var dep$this_child2_child1$visible$0 = this_child2$child1._get('menu')
-			this_child2$child1.connectOnChanged(dep$this_child2_child1$visible$0, 'currentPage', update$this_child2_child1$visible)
-			this_child2$child1._removeUpdater('visible', [[dep$this_child2_child1$visible$0, 'currentPage', update$this_child2_child1$visible]])
-			update$this_child2_child1$visible();
-//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
-			var update$this_child2_child1$height = (function() { this_child2$child1.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(this_child2$child1)
-			var dep$this_child2_child1$height$0 = this_child2$child1._get('parent')
-			this_child2$child1.connectOnChanged(dep$this_child2_child1$height$0, 'height', update$this_child2_child1$height)
-			this_child2$child1._removeUpdater('height', [[dep$this_child2_child1$height$0, 'height', update$this_child2_child1$height]])
-			update$this_child2_child1$height();
-//assigning source to ("http://content.jwplatform.com/videos/SJnBN5W3-mjpS2Ylx.mp4")
-			this_child2$child1._removeUpdater('source'); this_child2$child1.source = (("http://content.jwplatform.com/videos/SJnBN5W3-mjpS2Ylx.mp4"));
+//assigning source to ("//storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd")
+			this_child2$child1._removeUpdater('source'); this_child2$child1.source = (("//storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd"));
 //assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
 			var update$this_child2_child1$width = (function() { this_child2$child1.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2$child1)
 			var dep$this_child2_child1$width$0 = this_child2$child1._get('parent')
 			this_child2$child1.connectOnChanged(dep$this_child2_child1$width$0, 'width', update$this_child2_child1$width)
 			this_child2$child1._removeUpdater('width', [[dep$this_child2_child1$width$0, 'width', update$this_child2_child1$width]])
 			update$this_child2_child1$width();
+//assigning height to (this._get('width') * 0.75)
+			var update$this_child2_child1$height = (function() { this_child2$child1.height = ((this._get('width') * 0.75)); }).bind(this_child2$child1)
+			var dep$this_child2_child1$height$0 = this_child2$child1
+			this_child2$child1.connectOnChanged(dep$this_child2_child1$height$0, 'width', update$this_child2_child1$height)
+			this_child2$child1._removeUpdater('height', [[dep$this_child2_child1$height$0, 'width', update$this_child2_child1$height]])
+			update$this_child2_child1$height();
 
 			this$child2.addChild(this_child2$child1)
+
+//setting up component TextButton
+			var this_child2$child2 = __closure.this_child2$child2
+			this_child2$child2.__setup(__closure.__closure_this_child2$child2)
+			delete __closure.__closure_this_child2$child2
+
+//assigning text to ("JWPlayer")
+			this_child2$child2._removeUpdater('text'); this_child2$child2.text = (("JWPlayer"));
+
+			this$child2.addChild(this_child2$child2)
+
+//setting up component Item
+			var this_child2$child3 = __closure.this_child2$child3
+			this_child2$child3.__setup(__closure.__closure_this_child2$child3)
+			delete __closure.__closure_this_child2$child3
+
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child2_child3$width = (function() { this_child2$child3.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2$child3)
+			var dep$this_child2_child3$width$0 = this_child2$child3._get('parent')
+			this_child2$child3.connectOnChanged(dep$this_child2_child3$width$0, 'width', update$this_child2_child3$width)
+			this_child2$child3._removeUpdater('width', [[dep$this_child2_child3$width$0, 'width', update$this_child2_child3$width]])
+			update$this_child2_child3$width();
+//assigning height to (this._get('width') * 0.75)
+			var update$this_child2_child3$height = (function() { this_child2$child3.height = ((this._get('width') * 0.75)); }).bind(this_child2$child3)
+			var dep$this_child2_child3$height$0 = this_child2$child3
+			this_child2$child3.connectOnChanged(dep$this_child2_child3$height$0, 'width', update$this_child2_child3$height)
+			this_child2$child3._removeUpdater('height', [[dep$this_child2_child3$height$0, 'width', update$this_child2_child3$height]])
+			update$this_child2_child3$height();
+			this_child2$child3.onChanged('visible', (function(value) {
+				this._get('jwp').play(value)
+			} ).bind(this_child2$child3))
+
+
+//setting up component JWPlayer
+			var this_child2_child3$child0 = __closure.this_child2_child3$child0
+			this_child2_child3$child0.__setup(__closure.__closure_this_child2_child3$child0)
+			delete __closure.__closure_this_child2_child3$child0
+
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child2_child3_child0$width = (function() { this_child2_child3$child0.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2_child3$child0)
+			var dep$this_child2_child3_child0$width$0 = this_child2_child3$child0._get('parent')
+			this_child2_child3$child0.connectOnChanged(dep$this_child2_child3_child0$width$0, 'width', update$this_child2_child3_child0$width)
+			this_child2_child3$child0._removeUpdater('width', [[dep$this_child2_child3_child0$width$0, 'width', update$this_child2_child3_child0$width]])
+			update$this_child2_child3_child0$width();
+//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
+			var update$this_child2_child3_child0$height = (function() { this_child2_child3$child0.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(this_child2_child3$child0)
+			var dep$this_child2_child3_child0$height$0 = this_child2_child3$child0._get('parent')
+			this_child2_child3$child0.connectOnChanged(dep$this_child2_child3_child0$height$0, 'height', update$this_child2_child3_child0$height)
+			this_child2_child3$child0._removeUpdater('height', [[dep$this_child2_child3_child0$height$0, 'height', update$this_child2_child3_child0$height]])
+			update$this_child2_child3_child0$height();
+
+			this_child2$child3.addChild(this_child2_child3$child0)
+			this$child2.addChild(this_child2$child3)
+
+//setting up component TextButton
+			var this_child2$child4 = __closure.this_child2$child4
+			this_child2$child4.__setup(__closure.__closure_this_child2$child4)
+			delete __closure.__closure_this_child2$child4
+
+//assigning text to ("Bitmovin")
+			this_child2$child4._removeUpdater('text'); this_child2$child4.text = (("Bitmovin"));
+
+			this$child2.addChild(this_child2$child4)
+
+//setting up component Item
+			var this_child2$child5 = __closure.this_child2$child5
+			this_child2$child5.__setup(__closure.__closure_this_child2$child5)
+			delete __closure.__closure_this_child2$child5
+
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child2_child5$width = (function() { this_child2$child5.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2$child5)
+			var dep$this_child2_child5$width$0 = this_child2$child5._get('parent')
+			this_child2$child5.connectOnChanged(dep$this_child2_child5$width$0, 'width', update$this_child2_child5$width)
+			this_child2$child5._removeUpdater('width', [[dep$this_child2_child5$width$0, 'width', update$this_child2_child5$width]])
+			update$this_child2_child5$width();
+//assigning height to (this._get('width') * 0.75)
+			var update$this_child2_child5$height = (function() { this_child2$child5.height = ((this._get('width') * 0.75)); }).bind(this_child2$child5)
+			var dep$this_child2_child5$height$0 = this_child2$child5
+			this_child2$child5.connectOnChanged(dep$this_child2_child5$height$0, 'width', update$this_child2_child5$height)
+			this_child2$child5._removeUpdater('height', [[dep$this_child2_child5$height$0, 'width', update$this_child2_child5$height]])
+			update$this_child2_child5$height();
+			this_child2$child5.onChanged('visible', (function(value) {
+				this._get('btm').play(value)
+			} ).bind(this_child2$child5))
+
+
+//setting up component Bitmovin
+			var this_child2_child5$child0 = __closure.this_child2_child5$child0
+			this_child2_child5$child0.__setup(__closure.__closure_this_child2_child5$child0)
+			delete __closure.__closure_this_child2_child5$child0
+
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child2_child5_child0$width = (function() { this_child2_child5$child0.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2_child5$child0)
+			var dep$this_child2_child5_child0$width$0 = this_child2_child5$child0._get('parent')
+			this_child2_child5$child0.connectOnChanged(dep$this_child2_child5_child0$width$0, 'width', update$this_child2_child5_child0$width)
+			this_child2_child5$child0._removeUpdater('width', [[dep$this_child2_child5_child0$width$0, 'width', update$this_child2_child5_child0$width]])
+			update$this_child2_child5_child0$width();
+//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
+			var update$this_child2_child5_child0$height = (function() { this_child2_child5$child0.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(this_child2_child5$child0)
+			var dep$this_child2_child5_child0$height$0 = this_child2_child5$child0._get('parent')
+			this_child2_child5$child0.connectOnChanged(dep$this_child2_child5_child0$height$0, 'height', update$this_child2_child5_child0$height)
+			this_child2_child5$child0._removeUpdater('height', [[dep$this_child2_child5_child0$height$0, 'height', update$this_child2_child5_child0$height]])
+			update$this_child2_child5_child0$height();
+
+			this_child2$child5.addChild(this_child2_child5$child0)
+			this$child2.addChild(this_child2$child5)
+
+//setting up component TextButton
+			var this_child2$child6 = __closure.this_child2$child6
+			this_child2$child6.__setup(__closure.__closure_this_child2$child6)
+			delete __closure.__closure_this_child2$child6
+
+//assigning text to ("TheOPlayer")
+			this_child2$child6._removeUpdater('text'); this_child2$child6.text = (("TheOPlayer"));
+
+			this$child2.addChild(this_child2$child6)
+
+//setting up component Item
+			var this_child2$child7 = __closure.this_child2$child7
+			this_child2$child7.__setup(__closure.__closure_this_child2$child7)
+			delete __closure.__closure_this_child2$child7
+
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child2_child7$width = (function() { this_child2$child7.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2$child7)
+			var dep$this_child2_child7$width$0 = this_child2$child7._get('parent')
+			this_child2$child7.connectOnChanged(dep$this_child2_child7$width$0, 'width', update$this_child2_child7$width)
+			this_child2$child7._removeUpdater('width', [[dep$this_child2_child7$width$0, 'width', update$this_child2_child7$width]])
+			update$this_child2_child7$width();
+//assigning height to (this._get('width') * 0.75)
+			var update$this_child2_child7$height = (function() { this_child2$child7.height = ((this._get('width') * 0.75)); }).bind(this_child2$child7)
+			var dep$this_child2_child7$height$0 = this_child2$child7
+			this_child2$child7.connectOnChanged(dep$this_child2_child7$height$0, 'width', update$this_child2_child7$height)
+			this_child2$child7._removeUpdater('height', [[dep$this_child2_child7$height$0, 'width', update$this_child2_child7$height]])
+			update$this_child2_child7$height();
+			this_child2$child7.onChanged('visible', (function(value) {
+				this._get('theo').play(value)
+			} ).bind(this_child2$child7))
+
+
+//setting up component TheOPlayer
+			var this_child2_child7$child0 = __closure.this_child2_child7$child0
+			this_child2_child7$child0.__setup(__closure.__closure_this_child2_child7$child0)
+			delete __closure.__closure_this_child2_child7$child0
+
+//assigning source to ("https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm")
+			this_child2_child7$child0._removeUpdater('source'); this_child2_child7$child0.source = (("https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"));
+//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
+			var update$this_child2_child7_child0$height = (function() { this_child2_child7$child0.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(this_child2_child7$child0)
+			var dep$this_child2_child7_child0$height$0 = this_child2_child7$child0._get('parent')
+			this_child2_child7$child0.connectOnChanged(dep$this_child2_child7_child0$height$0, 'height', update$this_child2_child7_child0$height)
+			this_child2_child7$child0._removeUpdater('height', [[dep$this_child2_child7_child0$height$0, 'height', update$this_child2_child7_child0$height]])
+			update$this_child2_child7_child0$height();
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child2_child7_child0$width = (function() { this_child2_child7$child0.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2_child7$child0)
+			var dep$this_child2_child7_child0$width$0 = this_child2_child7$child0._get('parent')
+			this_child2_child7$child0.connectOnChanged(dep$this_child2_child7_child0$width$0, 'width', update$this_child2_child7_child0$width)
+			this_child2_child7$child0._removeUpdater('width', [[dep$this_child2_child7_child0$width$0, 'width', update$this_child2_child7_child0$width]])
+			update$this_child2_child7_child0$width();
+
+			this_child2$child7.addChild(this_child2_child7$child0)
+			this$child2.addChild(this_child2$child7)
+
+//setting up component TextButton
+			var this_child2$child8 = __closure.this_child2$child8
+			this_child2$child8.__setup(__closure.__closure_this_child2$child8)
+			delete __closure.__closure_this_child2$child8
+
+//assigning text to ("VideoJS")
+			this_child2$child8._removeUpdater('text'); this_child2$child8.text = (("VideoJS"));
+
+			this$child2.addChild(this_child2$child8)
+
+//setting up component Item
+			var this_child2$child9 = __closure.this_child2$child9
+			this_child2$child9.__setup(__closure.__closure_this_child2$child9)
+			delete __closure.__closure_this_child2$child9
+
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child2_child9$width = (function() { this_child2$child9.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2$child9)
+			var dep$this_child2_child9$width$0 = this_child2$child9._get('parent')
+			this_child2$child9.connectOnChanged(dep$this_child2_child9$width$0, 'width', update$this_child2_child9$width)
+			this_child2$child9._removeUpdater('width', [[dep$this_child2_child9$width$0, 'width', update$this_child2_child9$width]])
+			update$this_child2_child9$width();
+//assigning height to (this._get('width') * 0.75)
+			var update$this_child2_child9$height = (function() { this_child2$child9.height = ((this._get('width') * 0.75)); }).bind(this_child2$child9)
+			var dep$this_child2_child9$height$0 = this_child2$child9
+			this_child2$child9.connectOnChanged(dep$this_child2_child9$height$0, 'width', update$this_child2_child9$height)
+			this_child2$child9._removeUpdater('height', [[dep$this_child2_child9$height$0, 'width', update$this_child2_child9$height]])
+			update$this_child2_child9$height();
+			this_child2$child9.onChanged('visible', (function(value) {
+				this._get('vjs').play(value)
+			} ).bind(this_child2$child9))
+
+
+//setting up component VideoJS
+			var this_child2_child9$child0 = __closure.this_child2_child9$child0
+			this_child2_child9$child0.__setup(__closure.__closure_this_child2_child9$child0)
+			delete __closure.__closure_this_child2_child9$child0
+
+//assigning source to ("https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm")
+			this_child2_child9$child0._removeUpdater('source'); this_child2_child9$child0.source = (("https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"));
+//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
+			var update$this_child2_child9_child0$height = (function() { this_child2_child9$child0.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(this_child2_child9$child0)
+			var dep$this_child2_child9_child0$height$0 = this_child2_child9$child0._get('parent')
+			this_child2_child9$child0.connectOnChanged(dep$this_child2_child9_child0$height$0, 'height', update$this_child2_child9_child0$height)
+			this_child2_child9$child0._removeUpdater('height', [[dep$this_child2_child9_child0$height$0, 'height', update$this_child2_child9_child0$height]])
+			update$this_child2_child9_child0$height();
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child2_child9_child0$width = (function() { this_child2_child9$child0.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2_child9$child0)
+			var dep$this_child2_child9_child0$width$0 = this_child2_child9$child0._get('parent')
+			this_child2_child9$child0.connectOnChanged(dep$this_child2_child9_child0$width$0, 'width', update$this_child2_child9_child0$width)
+			this_child2_child9$child0._removeUpdater('width', [[dep$this_child2_child9_child0$width$0, 'width', update$this_child2_child9_child0$width]])
+			update$this_child2_child9_child0$width();
+
+			this_child2$child9.addChild(this_child2_child9$child0)
+			this$child2.addChild(this_child2$child9)
 			this.addChild(this$child2)
+
+//setting up component Rectangle
+			var this$child3 = __closure.this$child3
+			this$child3.__setup(__closure.__closure_this$child3)
+			delete __closure.__closure_this$child3
+
+//assigning y to (80)
+			this$child3._removeUpdater('y'); this$child3.y = ((80));
+//assigning width to ((this._get('parent')._get('width') * ((25) / 100)))
+			var update$this_child3$width = (function() { this$child3.width = (((this._get('parent')._get('width') * ((25) / 100)))); }).bind(this$child3)
+			var dep$this_child3$width$0 = this$child3._get('parent')
+			this$child3.connectOnChanged(dep$this_child3$width$0, 'width', update$this_child3$width)
+			this$child3._removeUpdater('width', [[dep$this_child3$width$0, 'width', update$this_child3$width]])
+			update$this_child3$width();
+//assigning x to ((this._get('parent')._get('width') * ((70) / 100)))
+			var update$this_child3$x = (function() { this$child3.x = (((this._get('parent')._get('width') * ((70) / 100)))); }).bind(this$child3)
+			var dep$this_child3$x$0 = this$child3._get('parent')
+			this$child3.connectOnChanged(dep$this_child3$x$0, 'width', update$this_child3$x)
+			this$child3._removeUpdater('x', [[dep$this_child3$x$0, 'width', update$this_child3$x]])
+			update$this_child3$x();
+//assigning color to ("#EEE")
+			this$child3._removeUpdater('color'); this$child3.color = (("#EEE"));
+//assigning height to (600)
+			this$child3._removeUpdater('height'); this$child3.height = ((600));
+
+
+//setting up component OverflowMixin
+			var this_child3$child0 = __closure.this_child3$child0
+			this_child3$child0.__setup(__closure.__closure_this_child3$child0)
+			delete __closure.__closure_this_child3$child0
+
+//assigning value to (_globals.controls.mixins.OverflowMixin.prototype.Scroll)
+			this_child3$child0._removeUpdater('value'); this_child3$child0.value = ((_globals.controls.mixins.OverflowMixin.prototype.Scroll));
+
+			this$child3.addChild(this_child3$child0)
+
+//setting up component ListView
+			var this_child3$child1 = __closure.this_child3$child1
+			this_child3$child1.__setup(__closure.__closure_this_child3$child1)
+			delete __closure.__closure_this_child3$child1
+
+//assigning spacing to (10)
+			this_child3$child1._removeUpdater('spacing'); this_child3$child1.spacing = ((10));
+//assigning height to (this._get('contentHeight'))
+			var update$this_child3_child1$height = (function() { this_child3$child1.height = ((this._get('contentHeight'))); }).bind(this_child3$child1)
+			var dep$this_child3_child1$height$0 = this_child3$child1
+			this_child3$child1.connectOnChanged(dep$this_child3_child1$height$0, 'contentHeight', update$this_child3_child1$height)
+			this_child3$child1._removeUpdater('height', [[dep$this_child3_child1$height$0, 'contentHeight', update$this_child3_child1$height]])
+			update$this_child3_child1$height();
+//assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
+			var update$this_child3_child1$width = (function() { this_child3$child1.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child3$child1)
+			var dep$this_child3_child1$width$0 = this_child3$child1._get('parent')
+			this_child3$child1.connectOnChanged(dep$this_child3_child1$width$0, 'width', update$this_child3_child1$width)
+			this_child3$child1._removeUpdater('width', [[dep$this_child3_child1$width$0, 'width', update$this_child3_child1$width]])
+			update$this_child3_child1$width();
+
+//setting up component ListModel
+			var this_child3_child1$model = __closure.this_child3_child1$model
+			this_child3_child1$model.__setup(__closure.__closure_this_child3_child1$model)
+			delete __closure.__closure_this_child3_child1$model
+
+
+
+			this$child3.addChild(this_child3$child1)
+			this.addChild(this$child3)
 }
 
 
-//=====[component core.Font]=====================
+//=====[component controls.core.PlaceHolder]=====================
 
-	var FontBaseComponent = _globals.core.Object
-	var FontBasePrototype = FontBaseComponent.prototype
+	var PlaceHolderBaseComponent = _globals.core.Object
+	var PlaceHolderBasePrototype = PlaceHolderBaseComponent.prototype
 
 /**
  * @constructor
  * @extends {_globals.core.Object}
  */
-	var FontComponent = _globals.core.Font = function(parent, _delegate) {
-		FontBaseComponent.apply(this, arguments)
+	var PlaceHolderComponent = _globals.controls.core.PlaceHolder = function(parent, _delegate) {
+		PlaceHolderBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this._placeholderClass = ''
+	}
 
 	}
-	var FontPrototype = FontComponent.prototype = Object.create(FontBasePrototype)
+	var PlaceHolderPrototype = PlaceHolderComponent.prototype = Object.create(PlaceHolderBasePrototype)
 
-	FontPrototype.constructor = FontComponent
+	PlaceHolderPrototype.constructor = PlaceHolderComponent
 
-	FontPrototype.componentName = 'core.Font'
-	FontPrototype._update = function(name,value) {
-		switch(name) {
-			case 'family':		this.parent.style('font-family', value); this.parent._updateSize(); break
-			case 'pointSize':	this.parent.style('font-size', value + "pt"); this.parent._updateSize(); break
-			case 'pixelSize':	this.parent.style('font-size', value + "px"); this.parent._updateSize(); break
-			case 'italic': 		this.parent.style('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
-			case 'bold': 		this.parent.style('font-weight', value? 'bold': 'normal'); this.parent._updateSize(); break
-			case 'underline':	this.parent.style('text-decoration', value? 'underline': ''); this.parent._updateSize(); break
-			case 'strike':		this.parent.style('text-decoration', value? 'line-through': ''); this.parent._updateSize(); break
-			case 'lineHeight':	this.parent.style('line-height', value + "px"); this.parent._updateSize(); break;
-			case 'weight':		this.parent.style('font-weight', value); this.parent._updateSize(); break;
+	PlaceHolderPrototype.componentName = 'controls.core.PlaceHolder'
+	PlaceHolderPrototype._update = function(name,value) {
+		switch (name) {
+			case 'text': this.parent.element.setAttribute('placeholder', value); break
+			case 'color': this.setPlaceholderColor(value); break
 		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+
+		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
-	core.addProperty(FontPrototype, 'string', 'family')
-	core.addProperty(FontPrototype, 'bool', 'italic')
-	core.addProperty(FontPrototype, 'bool', 'bold')
-	core.addProperty(FontPrototype, 'bool', 'underline')
-	core.addProperty(FontPrototype, 'bool', 'strike')
-	core.addProperty(FontPrototype, 'int', 'pixelSize')
-	core.addProperty(FontPrototype, 'int', 'pointSize')
-	core.addProperty(FontPrototype, 'int', 'lineHeight')
-	core.addProperty(FontPrototype, 'int', 'weight')
+	PlaceHolderPrototype.setPlaceholderColor = function(color) {
+		var cls = this.getClass()
+
+		var rgba = new _globals.core.Color(color).rgba()
+		//fixme: port to modernizr
+		var selectors = ['::-webkit-input-placeholder', '::-moz-placeholder', ':-moz-placeholder', ':-ms-input-placeholder']
+		selectors.forEach(function(selector) {
+			try {
+				this._context.stylesheet._addRule('.' + cls + selector, 'color: ' + rgba)
+				log('added rule for .' + cls + selector)
+			} catch(ex) {
+				//log(ex)
+			}
+		}.bind(this))
+	}
+	PlaceHolderPrototype.getClass = function() {
+		var cls
+		if (!this._placeholderClass) {
+			cls = this._placeholderClass = this._context.stylesheet.allocateClass('input')
+			this.parent.element.addClass(cls)
+		}
+		else
+			cls = this._placeholderClass
+		return cls
+	}
+	core.addProperty(PlaceHolderPrototype, 'string', 'text')
+	core.addProperty(PlaceHolderPrototype, 'Color', 'color')
+	core.addProperty(PlaceHolderPrototype, 'Font', 'font')
+
+	PlaceHolderPrototype.__create = function(__closure) {
+		PlaceHolderBasePrototype.__create.call(this, __closure.__base = { })
+//creating component controls.core.<anonymous>
+		var this$font = new _globals.controls.core.PlaceholderFont(this)
+		__closure.this$font = this$font
+
+//creating component PlaceholderFont
+		this$font.__create(__closure.__closure_this$font = { })
+
+		this.font = this$font
+	}
+	PlaceHolderPrototype.__setup = function(__closure) {
+	PlaceHolderBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//setting up component PlaceholderFont
+			var this$font = __closure.this$font
+			this$font.__setup(__closure.__closure_this$font)
+			delete __closure.__closure_this$font
+}
+
 
 //=====[component controls.ShakaPlayer]=====================
 
@@ -2126,6 +3017,702 @@ var this$child0 = new _globals.controls.core.Resource(this)
 			this._removeUpdater('width'); this.width = ((640));
 //assigning height to (480)
 			this._removeUpdater('height'); this.height = ((480));
+}
+
+
+//=====[component core.BaseView]=====================
+
+	var BaseViewBaseComponent = _globals.core.BaseLayout
+	var BaseViewBasePrototype = BaseViewBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.BaseLayout}
+ */
+	var BaseViewComponent = _globals.core.BaseView = function(parent, _delegate) {
+		BaseViewBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this._items = []
+		this._modelUpdate = new _globals.core.model.ModelUpdate()
+	}
+
+	}
+	var BaseViewPrototype = BaseViewComponent.prototype = Object.create(BaseViewBasePrototype)
+
+	BaseViewPrototype.constructor = BaseViewComponent
+
+	BaseViewPrototype.componentName = 'core.BaseView'
+	BaseViewPrototype.layoutFinished = _globals.core.createSignal('layoutFinished')
+	BaseViewPrototype._onRowsChanged = function(begin,end) {
+		if (this.trace)
+			log("rows changed", begin, end)
+
+		this._modelUpdate.update(this.model, begin, end)
+		this._delayedLayout.schedule()
+	}
+	BaseViewPrototype._updateDelegateIndex = function(idx) {
+		var item = this._items[idx]
+		if (item) {
+			item._local.model.index = idx
+			_globals.core.Object.prototype._update.call(item, '_rowIndex')
+		}
+	}
+	BaseViewPrototype.focusCurrent = function() {
+		var n = this.count
+		if (n == 0)
+			return
+
+		var idx = this.currentIndex
+		if (idx < 0 || idx >= n) {
+			if (this.keyNavigationWraps)
+				this.currentIndex = (idx + n) % n
+			else
+				this.currentIndex = idx < 0? 0: n - 1
+			return
+		}
+		var item = this._items[idx]
+
+		if (item)
+			this.focusChild(item)
+		if (this.contentFollowsCurrentItem)
+			this.positionViewAtIndex(idx)
+	}
+	BaseViewPrototype._updateItems = function(begin,end) {
+		for(var i = begin; i < end; ++i)
+			this._updateDelegate(i)
+	}
+	BaseViewPrototype._createDelegate = function(idx) {
+		var items = this._items
+		if (items[idx] !== null)
+			return
+
+		var row = this.model.get(idx)
+		row['index'] = idx
+		this._local['model'] = row
+
+		var item = this.delegate(this)
+		items[idx] = item
+		item.view = this
+		item.element.remove()
+		this.content.element.append(item.element)
+
+		item._local['model'] = row
+		delete this._local['model']
+		return item
+	}
+	BaseViewPrototype._updateDelegate = function(idx) {
+		var item = this._items[idx]
+		if (item) {
+			var row = this.model.get(idx)
+			row.index = idx
+			item._local.model = row
+			_globals.core.Object.prototype._update.call(item, '_row')
+		}
+	}
+	BaseViewPrototype._insertItems = function(begin,end) {
+		var n = end - begin + 2
+		var args = Array(n)
+		args[0] = begin
+		args[1] = 0
+		for(var i = 2; i < n; ++i)
+			args[i] = null
+		Array.prototype.splice.apply(this._items, args)
+	}
+	BaseViewPrototype._onReset = function() {
+		var model = this.model
+		if (this.trace)
+			log("reset", this._items.length, model.count)
+
+		this._modelUpdate.reset(model)
+		this._delayedLayout.schedule()
+	}
+	BaseViewPrototype._discardItem = function(item) {
+		if (item === null)
+			return
+		if (this.focusedChild === item)
+			this.focusedChild = null;
+		item.discard()
+	}
+	BaseViewPrototype._onRowsRemoved = function(begin,end) {
+		if (this.trace)
+			log("rows removed", begin, end)
+
+		this._modelUpdate.remove(this.model, begin, end)
+		this._delayedLayout.schedule()
+	}
+	BaseViewPrototype._onRowsInserted = function(begin,end) {
+		if (this.trace)
+			log("rows inserted", begin, end)
+
+		this._modelUpdate.insert(this.model, begin, end)
+		this._delayedLayout.schedule()
+	}
+	BaseViewPrototype._removeItems = function(begin,end) {
+		var deleted = this._items.splice(begin, end - begin)
+		var view = this
+		deleted.forEach(function(item) { view._discardItem(item)})
+	}
+	BaseViewPrototype._update = function(name,value) {
+		switch(name) {
+		case 'delegate':
+			if (value)
+				value.visible = false
+			break
+		}
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
+	BaseViewPrototype.itemAt = function(x,y) {
+		var idx = this.indexAt(x, y)
+		return idx >= 0? this._items[idx]: null
+	}
+	BaseViewPrototype._attach = function() {
+		if (this._attached || !this.model || !this.delegate)
+			return
+
+		this.model.on('reset', this._onReset.bind(this))
+		this.model.on('rowsInserted', this._onRowsInserted.bind(this))
+		this.model.on('rowsChanged', this._onRowsChanged.bind(this))
+		this.model.on('rowsRemoved', this._onRowsRemoved.bind(this))
+		this._attached = true
+		this._onReset()
+	}
+	BaseViewPrototype._processUpdates = function() {
+		this._modelUpdate.apply(this)
+		qml.core.BaseLayout.prototype._processUpdates.apply(this)
+	}
+	core.addProperty(BaseViewPrototype, 'Object', 'model')
+	core.addProperty(BaseViewPrototype, 'Item', 'delegate')
+	core.addProperty(BaseViewPrototype, 'int', 'contentX')
+	core.addProperty(BaseViewPrototype, 'int', 'contentY')
+	core.addProperty(BaseViewPrototype, 'int', 'scrollingStep', (0))
+	core.addProperty(BaseViewPrototype, 'int', 'animationDuration', (0))
+	core.addProperty(BaseViewPrototype, 'bool', 'contentFollowsCurrentItem', (true))
+	core.addProperty(BaseViewPrototype, 'bool', 'trace')
+	core.addProperty(BaseViewPrototype, 'BaseViewContent', 'content')
+/** @const @type {number} */
+	BaseViewPrototype.Beginning = 0
+/** @const @type {number} */
+	BaseViewComponent.Beginning = 0
+/** @const @type {number} */
+	BaseViewPrototype.Center = 1
+/** @const @type {number} */
+	BaseViewComponent.Center = 1
+/** @const @type {number} */
+	BaseViewPrototype.End = 2
+/** @const @type {number} */
+	BaseViewComponent.End = 2
+/** @const @type {number} */
+	BaseViewPrototype.Visible = 3
+/** @const @type {number} */
+	BaseViewComponent.Visible = 3
+/** @const @type {number} */
+	BaseViewPrototype.Contain = 4
+/** @const @type {number} */
+	BaseViewComponent.Contain = 4
+/** @const @type {number} */
+	BaseViewPrototype.Page = 5
+/** @const @type {number} */
+	BaseViewComponent.Page = 5
+	core.addProperty(BaseViewPrototype, 'enum', 'positionMode')
+	_globals.core._protoOnChanged(BaseViewPrototype, 'contentX', (function(value) { this.content.x = -value; } ))
+	_globals.core._protoOnChanged(BaseViewPrototype, 'height', (function(value) { this._delayedLayout.schedule() } ))
+	_globals.core._protoOnChanged(BaseViewPrototype, 'contentY', (function(value) { this.content.y = -value; } ))
+	_globals.core._protoOnChanged(BaseViewPrototype, 'recursiveVisible', (function(value) { if (value) this._delayedLayout.schedule(); } ))
+	_globals.core._protoOnChanged(BaseViewPrototype, 'width', (function(value) { this._delayedLayout.schedule() } ))
+	_globals.core._protoOnChanged(BaseViewPrototype, 'focusedChild', (function(value) {
+		var idx = this._items.indexOf(this.focusedChild)
+		if (idx >= 0)
+			this.currentIndex = idx
+	} ))
+	_globals.core._protoOnChanged(BaseViewPrototype, 'currentIndex', (function(value) {
+		this.focusCurrent()
+	} ))
+
+	BaseViewPrototype.__create = function(__closure) {
+		BaseViewBasePrototype.__create.call(this, __closure.__base = { })
+//creating component core.<anonymous>
+		var this$content = new _globals.core.BaseViewContent(this)
+		__closure.this$content = this$content
+
+//creating component BaseViewContent
+		this$content.__create(__closure.__closure_this$content = { })
+
+		this.content = this$content
+	}
+	BaseViewPrototype.__setup = function(__closure) {
+	BaseViewBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//assigning keyNavigationWraps to (true)
+			this._removeUpdater('keyNavigationWraps'); this.keyNavigationWraps = ((true));
+//assigning contentWidth to (1)
+			this._removeUpdater('contentWidth'); this.contentWidth = ((1));
+//assigning contentHeight to (1)
+			this._removeUpdater('contentHeight'); this.contentHeight = ((1));
+//assigning handleNavigationKeys to (true)
+			this._removeUpdater('handleNavigationKeys'); this.handleNavigationKeys = ((true));
+
+//setting up component BaseViewContent
+			var this$content = __closure.this$content
+			this$content.__setup(__closure.__closure_this$content)
+			delete __closure.__closure_this$content
+
+	var behavior_this_content_on_y = new _globals.core.Animation(this$content)
+	var behavior_this_content_on_y__closure = { behavior_this_content_on_y: behavior_this_content_on_y }
+
+//creating component Animation
+	behavior_this_content_on_y.__create(behavior_this_content_on_y__closure.__closure_behavior_this_content_on_y = { })
+
+
+//setting up component Animation
+	var behavior_this_content_on_y = behavior_this_content_on_y__closure.behavior_this_content_on_y
+	behavior_this_content_on_y.__setup(behavior_this_content_on_y__closure.__closure_behavior_this_content_on_y)
+	delete behavior_this_content_on_y__closure.__closure_behavior_this_content_on_y
+
+//assigning duration to (this._get('parent')._get('parent')._get('animationDuration'))
+	var update$behavior_this_content_on_y$duration = (function() { behavior_this_content_on_y.duration = ((this._get('parent')._get('parent')._get('animationDuration'))); }).bind(behavior_this_content_on_y)
+	var dep$behavior_this_content_on_y$duration$0 = behavior_this_content_on_y._get('parent')._get('parent')
+	behavior_this_content_on_y.connectOnChanged(dep$behavior_this_content_on_y$duration$0, 'animationDuration', update$behavior_this_content_on_y$duration)
+	behavior_this_content_on_y._removeUpdater('duration', [[dep$behavior_this_content_on_y$duration$0, 'animationDuration', update$behavior_this_content_on_y$duration]])
+	update$behavior_this_content_on_y$duration();
+
+	this$content.setAnimation('y', behavior_this_content_on_y);
+
+	var behavior_this_content_on_x = new _globals.core.Animation(this$content)
+	var behavior_this_content_on_x__closure = { behavior_this_content_on_x: behavior_this_content_on_x }
+
+//creating component Animation
+	behavior_this_content_on_x.__create(behavior_this_content_on_x__closure.__closure_behavior_this_content_on_x = { })
+
+
+//setting up component Animation
+	var behavior_this_content_on_x = behavior_this_content_on_x__closure.behavior_this_content_on_x
+	behavior_this_content_on_x.__setup(behavior_this_content_on_x__closure.__closure_behavior_this_content_on_x)
+	delete behavior_this_content_on_x__closure.__closure_behavior_this_content_on_x
+
+//assigning duration to (this._get('parent')._get('parent')._get('animationDuration'))
+	var update$behavior_this_content_on_x$duration = (function() { behavior_this_content_on_x.duration = ((this._get('parent')._get('parent')._get('animationDuration'))); }).bind(behavior_this_content_on_x)
+	var dep$behavior_this_content_on_x$duration$0 = behavior_this_content_on_x._get('parent')._get('parent')
+	behavior_this_content_on_x.connectOnChanged(dep$behavior_this_content_on_x$duration$0, 'animationDuration', update$behavior_this_content_on_x$duration)
+	behavior_this_content_on_x._removeUpdater('duration', [[dep$behavior_this_content_on_x$duration$0, 'animationDuration', update$behavior_this_content_on_x$duration]])
+	update$behavior_this_content_on_x$duration();
+
+	this$content.setAnimation('x', behavior_this_content_on_x);
+
+	var behavior_this_content_on_transform = new _globals.core.Animation(this$content)
+	var behavior_this_content_on_transform__closure = { behavior_this_content_on_transform: behavior_this_content_on_transform }
+
+//creating component Animation
+	behavior_this_content_on_transform.__create(behavior_this_content_on_transform__closure.__closure_behavior_this_content_on_transform = { })
+
+
+//setting up component Animation
+	var behavior_this_content_on_transform = behavior_this_content_on_transform__closure.behavior_this_content_on_transform
+	behavior_this_content_on_transform.__setup(behavior_this_content_on_transform__closure.__closure_behavior_this_content_on_transform)
+	delete behavior_this_content_on_transform__closure.__closure_behavior_this_content_on_transform
+
+//assigning duration to (this._get('parent')._get('parent')._get('animationDuration'))
+	var update$behavior_this_content_on_transform$duration = (function() { behavior_this_content_on_transform.duration = ((this._get('parent')._get('parent')._get('animationDuration'))); }).bind(behavior_this_content_on_transform)
+	var dep$behavior_this_content_on_transform$duration$0 = behavior_this_content_on_transform._get('parent')._get('parent')
+	behavior_this_content_on_transform.connectOnChanged(dep$behavior_this_content_on_transform$duration$0, 'animationDuration', update$behavior_this_content_on_transform$duration)
+	behavior_this_content_on_transform._removeUpdater('duration', [[dep$behavior_this_content_on_transform$duration$0, 'animationDuration', update$behavior_this_content_on_transform$duration]])
+	update$behavior_this_content_on_transform$duration();
+
+	this$content.setAnimation('transform', behavior_this_content_on_transform);
+
+			this._context._onCompleted((function() {
+		this._attach();
+		var delayedLayout = this._delayedLayout
+
+		var self = this
+		this.element.on('scroll', function(event) {
+			self.contentX = self.element.dom.scrollLeft
+			self.contentY = self.element.dom.scrollTop
+		}.bind(this))
+
+		delayedLayout.schedule()
+	} ).bind(this))
+}
+
+
+//=====[component core.ListView]=====================
+
+	var ListViewBaseComponent = _globals.core.BaseView
+	var ListViewBasePrototype = ListViewBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.BaseView}
+ */
+	var ListViewComponent = _globals.core.ListView = function(parent, _delegate) {
+		ListViewBaseComponent.apply(this, arguments)
+
+	}
+	var ListViewPrototype = ListViewComponent.prototype = Object.create(ListViewBasePrototype)
+
+	ListViewPrototype.constructor = ListViewComponent
+
+	ListViewPrototype.componentName = 'core.ListView'
+	ListViewPrototype.indexAt = function(x,y) {
+		var items = this._items
+		x += this.contentX
+		y += this.contentY
+		if (this.orientation == _globals.core.ListView.prototype.Horizontal) {
+			for (var i = 0; i < items.length; ++i) {
+				var item = items[i]
+				if (!item)
+					continue
+				var vx = item.viewX
+				if (x >= vx && x < vx + item.width)
+					return i
+			}
+		} else {
+			for (var i = 0; i < items.length; ++i) {
+				var item = items[i]
+				if (!item)
+					continue
+				var vy = item.viewY
+				if (y >= vy && y < vy + item.height)
+					return i
+			}
+		}
+		return -1
+	}
+	ListViewPrototype._createDelegate = function(idx) {
+		var item = _globals.core.BaseView.prototype._createDelegate.apply(this, arguments)
+		var delayedLayout = this._delayedLayout
+		if (this.orientation === this.Horizontal)
+			item.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
+		else
+			item.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
+		return item
+	}
+	ListViewPrototype.move = function(dx,dy) {
+		var horizontal = this.orientation == this.Horizontal
+		var x, y
+		if (horizontal && this.contentWidth > this.width) {
+			x = this.contentX + dx
+			if (x < 0)
+				x = 0
+			else if (x > this.contentWidth - this.width)
+				x = this.contentWidth - this.width
+			this.contentX = x
+		} else if (!horizontal && this.contentHeight > this.height) {
+			y = this.contentY + dy
+			if (y < 0)
+				y = 0
+			else if (y > this.contentHeight - this.height)
+				y = this.contentHeight - this.height
+			this.contentY = y
+		}
+	}
+	ListViewPrototype.positionViewAtIndex = function(idx) {
+		var cx = this.contentX, cy = this.contentY
+		var itemBox = this.getItemPosition(idx)
+		var x = itemBox[0], y = itemBox[1]
+		var iw = itemBox[2], ih = itemBox[3]
+		var w = this.width, h = this.height
+		var horizontal = this.orientation == this.Horizontal
+		var center = this.positionMode === this.Center
+
+		if (horizontal) {
+			var atCenter = x - w / 2 + iw / 2
+			if (center && this.contentWidth > w)
+				this.contentX = atCenter < 0 ? 0 : x > this.contentWidth - w / 2 - iw / 2 ? this.contentWidth - w : atCenter
+			else if (iw > w)
+				this.contentX = atCenter
+			else if (x - cx < 0)
+				this.contentX = x
+			else if (x - cx + iw > w)
+				this.contentX = x + iw - w
+		} else {
+			var atCenter = y - h / 2 + ih / 2
+			if (center && this.contentHeight > h)
+				this.contentY = atCenter < 0 ? 0 : y > this.contentHeight - h / 2 - ih / 2 ? this.contentHeight - h : atCenter
+			else if (ih > h)
+				this.contentY = atCenter
+			else if (y - cy < 0)
+				this.contentY = y
+			else if (y - cy + ih > h)
+				this.contentY = y + ih - h
+		}
+	}
+	ListViewPrototype._layout = function() {
+		var model = this.model;
+		if (!model) {
+			this.layoutFinished()
+			return
+		}
+
+		this.count = model.count
+
+		if (!this.recursiveVisible) {
+			this.layoutFinished()
+			return
+		}
+
+		var horizontal = this.orientation === this.Horizontal
+
+		var items = this._items
+		var n = items.length
+		var w = this.width, h = this.height
+		if (this.trace)
+			log("layout " + n + " into " + w + "x" + h)
+		var created = false
+		var p = 0
+		var c = horizontal? this.content.x: this.content.y
+		var size = horizontal? w: h
+		var maxW = 0, maxH = 0
+
+		var itemsCount = 0
+		for(var i = 0; i < n && (itemsCount == 0 || p + c < size); ++i) {
+			var item = items[i]
+
+			if (!item) {
+				if (p + c >= size && itemsCount > 0)
+					break
+				item = this._createDelegate(i)
+				created = true
+			}
+
+			++itemsCount
+
+			var s = (horizontal? item.width: item.height)
+			var visible = (p + c + s >= 0 && p + c < size)
+
+			if (item.x + item.width > maxW)
+				maxW = item.width + item.x
+			if (item.y + item.height > maxH)
+				maxH = item.height + item.y
+
+			if (horizontal)
+				item.viewX = p
+			else
+				item.viewY = p
+
+			if (this.currentIndex == i) {
+				this.focusChild(item)
+				if (this.contentFollowsCurrentItem)
+					this.positionViewAtIndex(i)
+			}
+
+			item.visibleInView = visible
+			p += s + this.spacing
+		}
+		for( ;i < n; ++i) {
+			var item = items[i]
+			if (item)
+				item.visibleInView = false
+		}
+		if (p > 0)
+			p -= this.spacing;
+
+		if (itemsCount)
+			p *= items.length / itemsCount
+
+		if (horizontal) {
+			this.content.width = p
+			this.content.height = maxH
+			this.contentWidth = p
+			this.contentHeight = maxH
+		} else {
+			this.content.width = maxW
+			this.content.height = p
+			this.contentWidth = maxW
+			this.contentHeight = p
+		}
+		this.layoutFinished()
+		if (created)
+			this._context._complete()
+	}
+	ListViewPrototype.getItemPosition = function(idx) {
+		var items = this._items
+		var item = items[idx]
+		if (!item) {
+			var x = 0, y = 0, w = 0, h = 0
+			for(var i = idx; i >= 0; --i) {
+				if (items[i]) {
+					item = items[i]
+					x = item.viewX + item.x
+					y = item.viewY + item.y
+					w = item.width
+					h = item.height
+					break
+				}
+			}
+			var missing = idx - i
+			if (missing > 0) {
+				x += missing * (w + this.spacing)
+				y += missing * (h + this.spacing)
+			}
+			return [x, y, w, h]
+		}
+		else
+			return [item.viewX + item.x, item.viewY + item.y, item.width, item.height]
+	}
+/** @const @type {number} */
+	ListViewPrototype.Vertical = 0
+/** @const @type {number} */
+	ListViewComponent.Vertical = 0
+/** @const @type {number} */
+	ListViewPrototype.Horizontal = 1
+/** @const @type {number} */
+	ListViewComponent.Horizontal = 1
+	core.addProperty(ListViewPrototype, 'enum', 'orientation')
+	_globals.core._protoOnChanged(ListViewPrototype, 'orientation', (function(value) { this._delayedLayout.schedule() } ))
+	_globals.core._protoOnKey(ListViewPrototype, 'Key', (function(key, event) {
+		if (!this.handleNavigationKeys) {
+			event.accepted = false;
+			return false;
+		}
+
+		var horizontal = this.orientation == this.Horizontal
+		if (horizontal) {
+			if (key == 'Left') {
+				--this.currentIndex;
+				event.accepted = true;
+				return true;
+			} else if (key == 'Right') {
+				++this.currentIndex;
+				event.accepted = true;
+				return true;
+			}
+		} else {
+			if (key == 'Up') {
+				if (!this.currentIndex && !this.keyNavigationWraps) {
+					event.accepted = false;
+					return false;
+				}
+				--this.currentIndex;
+				return true;
+			} else if (key == 'Down') {
+				if (this.currentIndex == this.count - 1 && !this.keyNavigationWraps) {
+					event.accepted = false;
+					return false;
+				}
+				++this.currentIndex;
+				event.accepted = true;
+				return true;
+			}
+		}
+	} ))
+
+//=====[component core.Rectangle]=====================
+
+	var RectangleBaseComponent = _globals.core.Item
+	var RectangleBasePrototype = RectangleBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Item}
+ */
+	var RectangleComponent = _globals.core.Rectangle = function(parent, _delegate) {
+		RectangleBaseComponent.apply(this, arguments)
+
+	}
+	var RectanglePrototype = RectangleComponent.prototype = Object.create(RectangleBasePrototype)
+
+	RectanglePrototype.constructor = RectangleComponent
+
+	RectanglePrototype.componentName = 'core.Rectangle'
+	RectanglePrototype._update = function(name,value) {
+		switch(name) {
+			case 'color': this.style('background-color', _globals.core.normalizeColor(value)); break;
+		}
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
+	RectanglePrototype._mapCSSAttribute = function(name) {
+		var attr = {color: 'background-color'}[name]
+		return (attr !== undefined)?
+			attr:
+			_globals.core.Item.prototype._mapCSSAttribute.apply(this, arguments)
+	}
+	core.addProperty(RectanglePrototype, 'color', 'color', ("#0000"))
+	core.addProperty(RectanglePrototype, 'Border', 'border')
+	core.addProperty(RectanglePrototype, 'Gradient', 'gradient')
+
+	RectanglePrototype.__create = function(__closure) {
+		RectangleBasePrototype.__create.call(this, __closure.__base = { })
+//creating component core.<anonymous>
+		var this$border = new _globals.core.Border(this)
+		__closure.this$border = this$border
+
+//creating component Border
+		this$border.__create(__closure.__closure_this$border = { })
+
+		this.border = this$border
+	}
+	RectanglePrototype.__setup = function(__closure) {
+	RectangleBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//setting up component Border
+			var this$border = __closure.this$border
+			this$border.__setup(__closure.__closure_this$border)
+			delete __closure.__closure_this$border
+}
+
+
+//=====[component controls.web.WebItem]=====================
+
+	var WebItemBaseComponent = _globals.core.Rectangle
+	var WebItemBasePrototype = WebItemBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Rectangle}
+ */
+	var WebItemComponent = _globals.controls.web.WebItem = function(parent, _delegate) {
+		WebItemBaseComponent.apply(this, arguments)
+
+	}
+	var WebItemPrototype = WebItemComponent.prototype = Object.create(WebItemBasePrototype)
+
+	WebItemPrototype.constructor = WebItemComponent
+
+	WebItemPrototype.componentName = 'controls.web.WebItem'
+	WebItemPrototype._update = function(name,value) {
+		switch (name) {
+			case 'title':
+				this.element.dom.setAttribute('title', value);
+				break;
+			case 'position':
+				this.style('position', value);
+				break
+		}
+		_globals.core.Rectangle.prototype._update.apply(this, arguments);
+	}
+	core.addProperty(WebItemPrototype, 'Mixin', 'hoverMixin')
+	core.addProperty(WebItemPrototype, 'string', 'position')
+	core.addProperty(WebItemPrototype, 'string', 'title')
+
+	WebItemPrototype.__create = function(__closure) {
+		WebItemBasePrototype.__create.call(this, __closure.__base = { })
+//creating component controls.web.<anonymous>
+		var this$hoverMixin = new _globals.controls.web.HoverClickMixin(this)
+		__closure.this$hoverMixin = this$hoverMixin
+
+//creating component HoverClickMixin
+		this$hoverMixin.__create(__closure.__closure_this$hoverMixin = { })
+
+		this.hoverMixin = this$hoverMixin
+		core.addAliasProperty(this, 'hover', (function() { return this._get('hoverMixin'); }).bind(this), 'value')
+		core.addAliasProperty(this, 'activeHoverEnabled', (function() { return this._get('hoverMixin'); }).bind(this), 'activeHoverEnabled')
+		core.addAliasProperty(this, 'activeHover', (function() { return this._get('hoverMixin'); }).bind(this), 'activeHover')
+		core.addAliasProperty(this, 'cursor', (function() { return this._get('hoverMixin'); }).bind(this), 'cursor')
+		core.addAliasProperty(this, 'clickable', (function() { return this._get('hoverMixin'); }).bind(this), 'clickable')
+		core.addAliasProperty(this, 'hoverable', (function() { return this._get('hoverMixin'); }).bind(this), 'enabled')
+	}
+	WebItemPrototype.__setup = function(__closure) {
+	WebItemBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//assigning color to ("transparent")
+			this._removeUpdater('color'); this.color = (("transparent"));
+
+//setting up component HoverClickMixin
+			var this$hoverMixin = __closure.this$hoverMixin
+			this$hoverMixin.__setup(__closure.__closure_this$hoverMixin)
+			delete __closure.__closure_this$hoverMixin
+
+
+//assigning hoverMixin.cursor to ("pointer")
+			this._removeUpdater('hoverMixin.cursor'); this._get('hoverMixin').cursor = (("pointer"));
 }
 
 
@@ -2237,6 +3824,47 @@ var this$child0 = new _globals.controls.core.Resource(this)
 }
 
 
+//=====[component core.BorderSide]=====================
+
+	var BorderSideBaseComponent = _globals.core.Object
+	var BorderSideBasePrototype = BorderSideBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Object}
+ */
+	var BorderSideComponent = _globals.core.BorderSide = function(parent, _delegate) {
+		BorderSideBaseComponent.apply(this, arguments)
+
+	}
+	var BorderSidePrototype = BorderSideComponent.prototype = Object.create(BorderSideBasePrototype)
+
+	BorderSidePrototype.constructor = BorderSideComponent
+
+	BorderSidePrototype.componentName = 'core.BorderSide'
+	BorderSidePrototype._update = function(name,value) {
+		switch(name) {
+			case 'width': this._updateStyle(); break
+			case 'color': this._updateStyle(); break
+		}
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+	BorderSidePrototype._updateStyle = function() {
+		if (this.parent && this.parent.parent) {
+			var pp = this.parent.parent
+			if (pp) {
+				var cssname = 'border-' + this.name
+				if (this.width) {
+					pp.style(cssname, this.width + "px solid " + _globals.core.normalizeColor(this.color))
+				} else
+					pp.style(cssname, '')
+			}
+		}
+	}
+	core.addProperty(BorderSidePrototype, 'string', 'name')
+	core.addProperty(BorderSidePrototype, 'int', 'width')
+	core.addProperty(BorderSidePrototype, 'color', 'color')
+
 //=====[component controls.JWPlayer]=====================
 
 	var JWPlayerBaseComponent = _globals.core.Item
@@ -2253,6 +3881,10 @@ var this$child0 = new _globals.controls.core.Resource(this)
 		this.element.setAttribute('id', 'jwplayer')
 
 		this._player = window.jwplayer('jwplayer')
+//		this._player.setup({});
+		this._player.on('all', function (e, x) {
+		    console.log("on all", e, x)
+		})
 	}
 
 	}
@@ -2263,6 +3895,24 @@ var this$child0 = new _globals.controls.core.Resource(this)
 	JWPlayerPrototype.componentName = 'controls.JWPlayer'
 	JWPlayerPrototype.finished = _globals.core.createSignal('finished')
 	JWPlayerPrototype.error = _globals.core.createSignal('error')
+	JWPlayerPrototype.play = function(state) {
+		this._player.play(state)
+	}
+	JWPlayerPrototype.loadPlaylist = function(pl) {
+
+		this._player.setup(pl[0])
+
+		var self = this;
+
+		this._player.on('all', function (e, x) {
+			if (e !== "time" && self.logsEnabled)
+			    console.log("JWplayer event", e, x)
+		})
+
+
+
+		this._player.load(pl)
+	}
 	core.addProperty(JWPlayerPrototype, 'string', 'source')
 	core.addProperty(JWPlayerPrototype, 'Color', 'backgroundColor', ("#000"))
 	core.addProperty(JWPlayerPrototype, 'float', 'volume', (1.0))
@@ -2276,6 +3926,7 @@ var this$child0 = new _globals.controls.core.Resource(this)
 	core.addProperty(JWPlayerPrototype, 'int', 'duration')
 	core.addProperty(JWPlayerPrototype, 'int', 'progress')
 	core.addProperty(JWPlayerPrototype, 'int', 'buffered')
+	core.addProperty(JWPlayerPrototype, 'bool', 'logsEnabled')
 	_globals.core._protoOnChanged(JWPlayerPrototype, 'source', (function(value) {
 		this._player.setup({
 			file: value,
@@ -2286,7 +3937,6 @@ var this$child0 = new _globals.controls.core.Resource(this)
 	} ))
 	_globals.core._protoOnChanged(JWPlayerPrototype, 'width', (function(value) { this.element.dom.width = value; } ))
 	_globals.core._protoOnChanged(JWPlayerPrototype, 'height', (function(value) { this.element.dom.height = value; } ))
-	_globals.core._protoOnChanged(JWPlayerPrototype, 'visible', (function(value) { this.style('display', (value ? 'initial' : 'none'))} ))
 
 	JWPlayerPrototype.__create = function(__closure) {
 		JWPlayerBasePrototype.__create.call(this, __closure.__base = { })
@@ -2296,6 +3946,12 @@ var this$child0 = new _globals.controls.core.Resource(this)
 	JWPlayerBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
 //assigning width to (640)
 			this._removeUpdater('width'); this.width = ((640));
+//assigning logsEnabled to (this._get('recursiveVisible'))
+			var update$this$logsEnabled = (function() { this.logsEnabled = ((this._get('recursiveVisible'))); }).bind(this)
+			var dep$this$logsEnabled$0 = this
+			this.connectOnChanged(dep$this$logsEnabled$0, 'recursiveVisible', update$this$logsEnabled)
+			this._removeUpdater('logsEnabled', [[dep$this$logsEnabled$0, 'recursiveVisible', update$this$logsEnabled]])
+			update$this$logsEnabled();
 //assigning height to (480)
 			this._removeUpdater('height'); this.height = ((480));
 }
@@ -2624,49 +4280,15 @@ var this$child0 = new _globals.controls.core.Resource(this)
 	TextButtonPrototype.constructor = TextButtonComponent
 
 	TextButtonPrototype.componentName = 'src.TextButton'
-	core.addProperty(TextButtonPrototype, 'string', 'page')
-	core.addProperty(TextButtonPrototype, 'object', 'hover')
-	core.addProperty(TextButtonPrototype, 'bool', 'active')
-	_globals.core._protoOn(TextButtonPrototype, 'clicked', (function() { this.parent.currentPage = this.page; } ))
 
 	TextButtonPrototype.__create = function(__closure) {
 		TextButtonBasePrototype.__create.call(this, __closure.__base = { })
-//creating component src.<anonymous>
-		var this$hover = new _globals.controls.web.HoverClickMixin(this)
-		__closure.this$hover = this$hover
 
-//creating component HoverClickMixin
-		this$hover.__create(__closure.__closure_this$hover = { })
-
-		this.hover = this$hover
 	}
 	TextButtonPrototype.__setup = function(__closure) {
 	TextButtonBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
-//assigning active to (this._get('page') === this._get('parent')._get('currentPage'))
-			var update$this$active = (function() { this.active = ((this._get('page') === this._get('parent')._get('currentPage'))); }).bind(this)
-			var dep$this$active$0 = this
-			this.connectOnChanged(dep$this$active$0, 'page', update$this$active)
-			var dep$this$active$1 = this._get('parent')
-			this.connectOnChanged(dep$this$active$1, 'currentPage', update$this$active)
-			this._removeUpdater('active', [[dep$this$active$0, 'page', update$this$active],[dep$this$active$1, 'currentPage', update$this$active]])
-			update$this$active();
-//assigning color to (this._get('active') ? "#E91E63" : (this._get('hover')._get('value') ? "#3F51B5" : "#2196F3"))
-			var update$this$color = (function() { this.color = ((this._get('active') ? "#E91E63" : (this._get('hover')._get('value') ? "#3F51B5" : "#2196F3"))); }).bind(this)
-			var dep$this$color$0 = this
-			this.connectOnChanged(dep$this$color$0, 'active', update$this$color)
-			var dep$this$color$1 = this._get('hover')
-			this.connectOnChanged(dep$this$color$1, 'value', update$this$color)
-			this._removeUpdater('color', [[dep$this$color$0, 'active', update$this$color],[dep$this$color$1, 'value', update$this$color]])
-			update$this$color();
-
-//setting up component HoverClickMixin
-			var this$hover = __closure.this$hover
-			this$hover.__setup(__closure.__closure_this$hover)
-			delete __closure.__closure_this$hover
-
-//assigning cursor to ("pointer")
-			this$hover._removeUpdater('cursor'); this$hover.cursor = (("pointer"));
-
+//assigning color to ("#2196F3")
+			this._removeUpdater('color'); this.color = (("#2196F3"));
 //assigning font.pixelSize to (24)
 			this._removeUpdater('font.pixelSize'); this._get('font').pixelSize = ((24));
 	var behavior_this_on_color = new _globals.core.Animation(this)
@@ -2970,46 +4592,67 @@ var this$child0 = new _globals.controls.core.Resource(this)
 	core.addProperty(TransformPrototype, 'real', 'skewX')
 	core.addProperty(TransformPrototype, 'real', 'skewY')
 
-//=====[component core.BorderSide]=====================
+//=====[component controls.mixins.OverflowMixin]=====================
 
-	var BorderSideBaseComponent = _globals.core.Object
-	var BorderSideBasePrototype = BorderSideBaseComponent.prototype
+	var OverflowMixinBaseComponent = _globals.core.Object
+	var OverflowMixinBasePrototype = OverflowMixinBaseComponent.prototype
 
 /**
  * @constructor
  * @extends {_globals.core.Object}
  */
-	var BorderSideComponent = _globals.core.BorderSide = function(parent, _delegate) {
-		BorderSideBaseComponent.apply(this, arguments)
+	var OverflowMixinComponent = _globals.controls.mixins.OverflowMixin = function(parent, _delegate) {
+		OverflowMixinBaseComponent.apply(this, arguments)
 
 	}
-	var BorderSidePrototype = BorderSideComponent.prototype = Object.create(BorderSideBasePrototype)
+	var OverflowMixinPrototype = OverflowMixinComponent.prototype = Object.create(OverflowMixinBasePrototype)
 
-	BorderSidePrototype.constructor = BorderSideComponent
+	OverflowMixinPrototype.constructor = OverflowMixinComponent
 
-	BorderSidePrototype.componentName = 'core.BorderSide'
-	BorderSidePrototype._update = function(name,value) {
-		switch(name) {
-			case 'width': this._updateStyle(); break
-			case 'color': this._updateStyle(); break
+	OverflowMixinPrototype.componentName = 'controls.mixins.OverflowMixin'
+	OverflowMixinPrototype._update = function(name,value) {
+		switch(value) {
+			case this.Visible:	
+				this.parent.style('overflow', 'visible');
+				break;
+			case this.Hidden:	
+				this.parent.style('overflow', 'hidden');
+				break;
+			case this.Scroll:	
+				this.parent.style('overflow', 'auto');
+				break;
+			case this.ScrollX:
+				this.parent.style('overflow', 'auto');
+				this.parent.style('overflow-y', 'hidden');
+				break;
+			case this.ScrollY:
+				this.parent.style('overflow', 'auto');
+				this.parent.style('overflow-x', 'hidden');
+				break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
-	BorderSidePrototype._updateStyle = function() {
-		if (this.parent && this.parent.parent) {
-			var pp = this.parent.parent
-			if (pp) {
-				var cssname = 'border-' + this.name
-				if (this.width) {
-					pp.style(cssname, this.width + "px solid " + _globals.core.normalizeColor(this.color))
-				} else
-					pp.style(cssname, '')
-			}
-		}
-	}
-	core.addProperty(BorderSidePrototype, 'string', 'name')
-	core.addProperty(BorderSidePrototype, 'int', 'width')
-	core.addProperty(BorderSidePrototype, 'color', 'color')
+/** @const @type {number} */
+	OverflowMixinPrototype.Visible = 0
+/** @const @type {number} */
+	OverflowMixinComponent.Visible = 0
+/** @const @type {number} */
+	OverflowMixinPrototype.Hidden = 1
+/** @const @type {number} */
+	OverflowMixinComponent.Hidden = 1
+/** @const @type {number} */
+	OverflowMixinPrototype.Scroll = 2
+/** @const @type {number} */
+	OverflowMixinComponent.Scroll = 2
+/** @const @type {number} */
+	OverflowMixinPrototype.ScrollX = 3
+/** @const @type {number} */
+	OverflowMixinComponent.ScrollX = 3
+/** @const @type {number} */
+	OverflowMixinPrototype.ScrollY = 4
+/** @const @type {number} */
+	OverflowMixinComponent.ScrollY = 4
+	core.addProperty(OverflowMixinPrototype, 'enum', 'value')
 
 //=====[component core.Anchors]=====================
 
@@ -3218,59 +4861,202 @@ var this$child0 = new _globals.controls.core.Resource(this)
 	core.addProperty(AnchorsPrototype, 'int', 'leftMargin')
 	core.addProperty(AnchorsPrototype, 'int', 'rightMargin')
 
-//=====[component core.Rectangle]=====================
+//=====[component core.Image]=====================
 
-	var RectangleBaseComponent = _globals.core.Item
-	var RectangleBasePrototype = RectangleBaseComponent.prototype
+	var ImageBaseComponent = _globals.core.Item
+	var ImageBasePrototype = ImageBaseComponent.prototype
 
 /**
  * @constructor
  * @extends {_globals.core.Item}
  */
-	var RectangleComponent = _globals.core.Rectangle = function(parent, _delegate) {
-		RectangleBaseComponent.apply(this, arguments)
+	var ImageComponent = _globals.core.Image = function(parent, _delegate) {
+		ImageBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		var self = this
+		this._delayedLoad = new _globals.core.DelayedAction(this._context, function() {
+			self._load()
+		})
+
+		this._context.backend.initImage(this)
+		this.load()
+	}
 
 	}
-	var RectanglePrototype = RectangleComponent.prototype = Object.create(RectangleBasePrototype)
+	var ImagePrototype = ImageComponent.prototype = Object.create(ImageBasePrototype)
 
-	RectanglePrototype.constructor = RectangleComponent
+	ImagePrototype.constructor = ImageComponent
 
-	RectanglePrototype.componentName = 'core.Rectangle'
-	RectanglePrototype._update = function(name,value) {
+	ImagePrototype.componentName = 'core.Image'
+	ImagePrototype._load = function() {
+		this._context.backend.loadImage(this)
+	}
+	ImagePrototype._update = function(name,value) {
 		switch(name) {
-			case 'color': this.style('background-color', _globals.core.normalizeColor(value)); break;
+			case 'width':
+			case 'height':
+			case 'fillMode': this.load(); break;
+			case 'source':
+				this.status = value ? this.Loading : this.Null;
+				if (value)
+					this.load();
+				break;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
-	RectanglePrototype._mapCSSAttribute = function(name) {
-		var attr = {color: 'background-color'}[name]
-		return (attr !== undefined)?
-			attr:
-			_globals.core.Item.prototype._mapCSSAttribute.apply(this, arguments)
+	ImagePrototype.load = function() {
+		this.status = (this.source.length === 0) ? _globals.core.Image.prototype.Null: _globals.core.Image.prototype.Loading
+		this._delayedLoad.schedule()
 	}
-	core.addProperty(RectanglePrototype, 'color', 'color', ("#0000"))
-	core.addProperty(RectanglePrototype, 'Border', 'border')
-	core.addProperty(RectanglePrototype, 'Gradient', 'gradient')
-
-	RectanglePrototype.__create = function(__closure) {
-		RectangleBasePrototype.__create.call(this, __closure.__base = { })
-//creating component core.<anonymous>
-		var this$border = new _globals.core.Border(this)
-		__closure.this$border = this$border
-
-//creating component Border
-		this$border.__create(__closure.__closure_this$border = { })
-
-		this.border = this$border
+	ImagePrototype._onError = function() {
+		this.status = this.Error;
 	}
-	RectanglePrototype.__setup = function(__closure) {
-	RectangleBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
-//setting up component Border
-			var this$border = __closure.this$border
-			this$border.__setup(__closure.__closure_this$border)
-			delete __closure.__closure_this$border
-}
+	core.addProperty(ImagePrototype, 'int', 'paintedWidth')
+	core.addProperty(ImagePrototype, 'int', 'paintedHeight')
+	core.addProperty(ImagePrototype, 'int', 'sourceWidth')
+	core.addProperty(ImagePrototype, 'int', 'sourceHeight')
+	core.addProperty(ImagePrototype, 'string', 'source')
+/** @const @type {number} */
+	ImagePrototype.Null = 0
+/** @const @type {number} */
+	ImageComponent.Null = 0
+/** @const @type {number} */
+	ImagePrototype.Ready = 1
+/** @const @type {number} */
+	ImageComponent.Ready = 1
+/** @const @type {number} */
+	ImagePrototype.Loading = 2
+/** @const @type {number} */
+	ImageComponent.Loading = 2
+/** @const @type {number} */
+	ImagePrototype.Error = 3
+/** @const @type {number} */
+	ImageComponent.Error = 3
+	core.addProperty(ImagePrototype, 'enum', 'status')
+/** @const @type {number} */
+	ImagePrototype.Stretch = 0
+/** @const @type {number} */
+	ImageComponent.Stretch = 0
+/** @const @type {number} */
+	ImagePrototype.PreserveAspectFit = 1
+/** @const @type {number} */
+	ImageComponent.PreserveAspectFit = 1
+/** @const @type {number} */
+	ImagePrototype.PreserveAspectCrop = 2
+/** @const @type {number} */
+	ImageComponent.PreserveAspectCrop = 2
+/** @const @type {number} */
+	ImagePrototype.Tile = 3
+/** @const @type {number} */
+	ImageComponent.Tile = 3
+/** @const @type {number} */
+	ImagePrototype.TileVertically = 4
+/** @const @type {number} */
+	ImageComponent.TileVertically = 4
+/** @const @type {number} */
+	ImagePrototype.TileHorizontally = 5
+/** @const @type {number} */
+	ImageComponent.TileHorizontally = 5
+/** @const @type {number} */
+	ImagePrototype.Pad = 6
+/** @const @type {number} */
+	ImageComponent.Pad = 6
+	core.addProperty(ImagePrototype, 'enum', 'fillMode')
 
+//=====[component core.ListModel]=====================
+
+	var ListModelBaseComponent = _globals.core.Object
+	var ListModelBasePrototype = ListModelBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Object}
+ */
+	var ListModelComponent = _globals.core.ListModel = function(parent, _delegate) {
+		ListModelBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this._rows = []
+	}
+
+	}
+	var ListModelPrototype = ListModelComponent.prototype = Object.create(ListModelBasePrototype)
+
+	ListModelPrototype.constructor = ListModelComponent
+
+	ListModelPrototype.componentName = 'core.ListModel'
+	ListModelPrototype.reset = _globals.core.createSignal('reset')
+	ListModelPrototype.rowsChanged = _globals.core.createSignal('rowsChanged')
+	ListModelPrototype.rowsRemoved = _globals.core.createSignal('rowsRemoved')
+	ListModelPrototype.rowsInserted = _globals.core.createSignal('rowsInserted')
+	ListModelPrototype.insert = function(idx,row) {
+		if (idx < 0 || idx > this._rows.length)
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
+		this._rows.splice(idx, 0, row)
+		this.count = this._rows.length
+		this.rowsInserted(idx, idx + 1)
+	}
+	ListModelPrototype.addChild = function(child) {
+		this.append(child)
+	}
+	ListModelPrototype.remove = function(idx,n) {
+		if (idx < 0 || idx >= this._rows.length)
+			throw new Error('index ' + idx + ' out of bounds')
+		if (n === undefined)
+			n = 1
+		this._rows.splice(idx, n)
+		this.count = this._rows.length
+		this.rowsRemoved(idx, idx + n)
+	}
+	ListModelPrototype.setProperty = function(idx,name,value) {
+		if (idx < 0 || idx >= this._rows.length)
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
+		var row = this._rows[idx]
+		if (!(row instanceof Object))
+			throw new Error('row is non-object, invalid index? (' + idx + ')')
+
+		if (row[name] !== value) {
+			row[name] = value
+			this.rowsChanged(idx, idx + 1)
+		}
+	}
+	ListModelPrototype.get = function(idx) {
+		if (idx < 0 || idx >= this._rows.length)
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
+		var row = this._rows[idx]
+		if (!(row instanceof Object))
+			throw new Error('row is non-object')
+		row.index = idx
+		return row
+	}
+	ListModelPrototype.clear = function() { this.assign([]) }
+	ListModelPrototype.append = function(row) {
+		var l = this._rows.length
+		if (Array.isArray(row)) {
+			Array.prototype.push.apply(this._rows, row)
+			this.count = this._rows.length
+			this.rowsInserted(l, l + row.length)
+		} else {
+			this._rows.push(row)
+			this.count = this._rows.length
+			this.rowsInserted(l, l + 1)
+		}
+	}
+	ListModelPrototype.set = function(idx,row) {
+		if (idx < 0 || idx >= this._rows.length)
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
+		if (!(row instanceof Object))
+			throw new Error('row is non-object')
+		this._rows[idx] = row
+		this.rowsChanged(idx, idx + 1)
+	}
+	ListModelPrototype.assign = function(rows) {
+		this._rows = rows
+		this.count = this._rows.length
+		this.reset()
+	}
+	core.addProperty(ListModelPrototype, 'int', 'count')
 
 //=====[component core.AnchorLine]=====================
 
@@ -3294,6 +5080,72 @@ var this$child0 = new _globals.controls.core.Resource(this)
 		return this.parent.toScreen()[this.boxIndex]
 	}
 	core.addProperty(AnchorLinePrototype, 'int', 'boxIndex')
+
+//=====[component controls.core.PlaceholderFont]=====================
+
+	var PlaceholderFontBaseComponent = _globals.core.Object
+	var PlaceholderFontBasePrototype = PlaceholderFontBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Object}
+ */
+	var PlaceholderFontComponent = _globals.controls.core.PlaceholderFont = function(parent, _delegate) {
+		PlaceholderFontBaseComponent.apply(this, arguments)
+
+	}
+	var PlaceholderFontPrototype = PlaceholderFontComponent.prototype = Object.create(PlaceholderFontBasePrototype)
+
+	PlaceholderFontPrototype.constructor = PlaceholderFontComponent
+
+	PlaceholderFontPrototype.componentName = 'controls.core.PlaceholderFont'
+	PlaceholderFontPrototype._update = function(name,value) {
+		switch (name) {
+			case 'family':		this.updateProperty('font-family', value); this.parent.parent._updateSize(); break
+			case 'pointSize':	this.updateProperty('font-size', value + "pt"); this.parent.parent._updateSize(); break
+			case 'pixelSize':	this.updateProperty('font-size', value + "px"); this.parent.parent._updateSize(); break
+			case 'italic': 		this.updateProperty('font-style', value? 'italic': 'normal'); this.parent.parent._updateSize(); break
+			case 'bold': 		this.updateProperty('font-weight', value? 'bold': 'normal'); this.parent.parent._updateSize(); break
+			case 'underline':	this.updateProperty('text-decoration', value? 'underline': ''); this.parent.parent._updateSize(); break
+			case 'strike':		this.updateProperty('text-decoration', value? 'line-through': ''); this.parent._updateSize(); break
+			case 'lineHeight':	this.updateProperty('line-height', value + "px"); this.parent.parent._updateSize(); break;
+			case 'weight':		this.updateProperty('font-weight', value); this.parent.parent._updateSize(); break;
+		}
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+	PlaceholderFontPrototype.updateProperty = function(name,value) {
+		var cls = this.getClass()
+
+		//fixme: port to modernizr
+		var selectors = ['::-webkit-input-placeholder', '::-moz-placeholder', ':-moz-placeholder', ':-ms-input-placeholder']
+		selectors.forEach(function(selector) {
+			try {
+				this._context.stylesheet._addRule('.' + cls + selector, name + ':' + value)
+				log('added rule for .' + cls + selector)
+			} catch(ex) {
+				//log(ex)
+			}
+		}.bind(this))
+	}
+	PlaceholderFontPrototype.getClass = function() {
+		var cls
+		if (!this._placeholderClass) {
+			cls = this._placeholderClass = this._context.stylesheet.allocateClass('placeholderFont')
+			this.parent.parent.element.addClass(cls)
+		}
+		else
+			cls = this._placeholderClass
+		return cls
+	}
+	core.addProperty(PlaceholderFontPrototype, 'string', 'family')
+	core.addProperty(PlaceholderFontPrototype, 'bool', 'italic')
+	core.addProperty(PlaceholderFontPrototype, 'bool', 'bold')
+	core.addProperty(PlaceholderFontPrototype, 'bool', 'underline')
+	core.addProperty(PlaceholderFontPrototype, 'bool', 'strike')
+	core.addProperty(PlaceholderFontPrototype, 'int', 'pixelSize')
+	core.addProperty(PlaceholderFontPrototype, 'int', 'pointSize')
+	core.addProperty(PlaceholderFontPrototype, 'int', 'lineHeight')
+	core.addProperty(PlaceholderFontPrototype, 'int', 'weight')
 
 //=====[component core.RAIIEventEmitter]=====================
 
@@ -3348,6 +5200,48 @@ var this$child0 = new _globals.controls.core.Resource(this)
 			this._onLastListener[''](name)
 		}
 	}
+
+//=====[component core.Font]=====================
+
+	var FontBaseComponent = _globals.core.Object
+	var FontBasePrototype = FontBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Object}
+ */
+	var FontComponent = _globals.core.Font = function(parent, _delegate) {
+		FontBaseComponent.apply(this, arguments)
+
+	}
+	var FontPrototype = FontComponent.prototype = Object.create(FontBasePrototype)
+
+	FontPrototype.constructor = FontComponent
+
+	FontPrototype.componentName = 'core.Font'
+	FontPrototype._update = function(name,value) {
+		switch(name) {
+			case 'family':		this.parent.style('font-family', value); this.parent._updateSize(); break
+			case 'pointSize':	this.parent.style('font-size', value + "pt"); this.parent._updateSize(); break
+			case 'pixelSize':	this.parent.style('font-size', value + "px"); this.parent._updateSize(); break
+			case 'italic': 		this.parent.style('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
+			case 'bold': 		this.parent.style('font-weight', value? 'bold': 'normal'); this.parent._updateSize(); break
+			case 'underline':	this.parent.style('text-decoration', value? 'underline': ''); this.parent._updateSize(); break
+			case 'strike':		this.parent.style('text-decoration', value? 'line-through': ''); this.parent._updateSize(); break
+			case 'lineHeight':	this.parent.style('line-height', value + "px"); this.parent._updateSize(); break;
+			case 'weight':		this.parent.style('font-weight', value); this.parent._updateSize(); break;
+		}
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+	core.addProperty(FontPrototype, 'string', 'family')
+	core.addProperty(FontPrototype, 'bool', 'italic')
+	core.addProperty(FontPrototype, 'bool', 'bold')
+	core.addProperty(FontPrototype, 'bool', 'underline')
+	core.addProperty(FontPrototype, 'bool', 'strike')
+	core.addProperty(FontPrototype, 'int', 'pixelSize')
+	core.addProperty(FontPrototype, 'int', 'pointSize')
+	core.addProperty(FontPrototype, 'int', 'lineHeight')
+	core.addProperty(FontPrototype, 'int', 'weight')
 
 //=====[component html5.Stylesheet]=====================
 
@@ -3412,6 +5306,154 @@ var this$child0 = new _globals.controls.core.Resource(this)
 		else
 			return selector
 	}
+
+//=====[component controls.web.HoverClickMixin]=====================
+
+	var HoverClickMixinBaseComponent = _globals.core.Object
+	var HoverClickMixinBasePrototype = HoverClickMixinBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Object}
+ */
+	var HoverClickMixinComponent = _globals.controls.web.HoverClickMixin = function(parent, _delegate) {
+		HoverClickMixinBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this.element = this.parent.element;
+		this.parent.style('cursor', this.cursor)
+		this._bindClick(this.clickable)
+		this._bindHover(this.enabled)
+		this._bindActiveHover(this.activeHoverEnabled)
+	}
+
+	}
+	var HoverClickMixinPrototype = HoverClickMixinComponent.prototype = Object.create(HoverClickMixinBasePrototype)
+
+	HoverClickMixinPrototype.constructor = HoverClickMixinComponent
+
+	HoverClickMixinPrototype.componentName = 'controls.web.HoverClickMixin'
+	HoverClickMixinPrototype._bindActiveHover = function(value) {
+		if (value && !this._hmActiveHoverBinder) {
+			this._hmActiveHoverBinder = new _globals.core.EventBinder(this.parent.element)
+			this._hmActiveHoverBinder.on('mouseover', function() { this.activeHover = true }.bind(this))
+			this._hmActiveHoverBinder.on('mouseout', function() { this.activeHover = false }.bind(this))
+		}
+		if (this._hmActiveHoverBinder)
+		{
+			this._hmActiveHoverBinder.enable(value)
+		}
+	}
+	HoverClickMixinPrototype._bindClick = function(value) {
+		if (value && !this._hmClickBinder) {
+			this._hmClickBinder = new _globals.core.EventBinder(this.element)
+			this._hmClickBinder.on('click', _globals.core.createSignalForwarder(this.parent, 'clicked').bind(this))
+		}
+		if (this._hmClickBinder)
+			this._hmClickBinder.enable(value)
+	}
+	HoverClickMixinPrototype._bindHover = function(value) {
+		if (value && !this._hmHoverBinder) {
+			this._hmHoverBinder = new _globals.core.EventBinder(this.parent.element)
+			this._hmHoverBinder.on('mouseenter', function() { this.value = true }.bind(this))
+			this._hmHoverBinder.on('mouseleave', function() { this.value = false }.bind(this))
+		}
+		if (this._hmHoverBinder)
+			this._hmHoverBinder.enable(value)
+	}
+	core.addProperty(HoverClickMixinPrototype, 'bool', 'enabled', (true))
+	core.addProperty(HoverClickMixinPrototype, 'bool', 'clickable', (true))
+	core.addProperty(HoverClickMixinPrototype, 'bool', 'activeHoverEnabled', (false))
+	core.addProperty(HoverClickMixinPrototype, 'bool', 'value')
+	core.addProperty(HoverClickMixinPrototype, 'bool', 'activeHover', (false))
+	core.addProperty(HoverClickMixinPrototype, 'string', 'cursor')
+	_globals.core._protoOnChanged(HoverClickMixinPrototype, 'clickable', (function(value) { this._bindClick(value) } ))
+	_globals.core._protoOnChanged(HoverClickMixinPrototype, 'cursor', (function(value) {
+		this.parent.style('cursor', value)
+	} ))
+	_globals.core._protoOnChanged(HoverClickMixinPrototype, 'activeHoverEnabled', (function(value) { this._bindActiveHover(value) } ))
+	_globals.core._protoOnChanged(HoverClickMixinPrototype, 'enabled', (function(value) { this._bindHover(value) } ))
+
+//=====[component controls.VideoJS]=====================
+
+	var VideoJSBaseComponent = _globals.core.Item
+	var VideoJSBasePrototype = VideoJSBaseComponent.prototype
+
+/**
+ * @constructor
+ * @extends {_globals.core.Item}
+ */
+	var VideoJSComponent = _globals.controls.VideoJS = function(parent, _delegate) {
+		VideoJSBaseComponent.apply(this, arguments)
+	//custom constructor:
+	{
+		this.element.setAttribute('id', 'videojs')
+		this.element.setAttribute('controls', '')
+		this.element.setAttribute('preload', 'auto')
+		this.element.setAttribute('data-setup', '{}')
+		this.element.setAttribute('class', 'video-js')
+
+		this._player = window.videojs('videojs')
+
+	}
+
+	}
+	var VideoJSPrototype = VideoJSComponent.prototype = Object.create(VideoJSBasePrototype)
+
+	VideoJSPrototype.constructor = VideoJSComponent
+
+	VideoJSPrototype.componentName = 'controls.VideoJS'
+	VideoJSPrototype.finished = _globals.core.createSignal('finished')
+	VideoJSPrototype.error = _globals.core.createSignal('error')
+	VideoJSPrototype.getTag = function() { return 'video' }
+	VideoJSPrototype.play = function(state) {
+		this._player.play(state)
+	}
+	core.addProperty(VideoJSPrototype, 'string', 'source')
+	core.addProperty(VideoJSPrototype, 'Color', 'backgroundColor', ("#000"))
+	core.addProperty(VideoJSPrototype, 'float', 'volume', (1.0))
+	core.addProperty(VideoJSPrototype, 'bool', 'loop', (false))
+	core.addProperty(VideoJSPrototype, 'bool', 'ready', (false))
+	core.addProperty(VideoJSPrototype, 'bool', 'muted', (false))
+	core.addProperty(VideoJSPrototype, 'bool', 'paused', (false))
+	core.addProperty(VideoJSPrototype, 'bool', 'waiting', (false))
+	core.addProperty(VideoJSPrototype, 'bool', 'seeking', (false))
+	core.addProperty(VideoJSPrototype, 'bool', 'autoPlay', (false))
+	core.addProperty(VideoJSPrototype, 'int', 'duration')
+	core.addProperty(VideoJSPrototype, 'int', 'progress')
+	core.addProperty(VideoJSPrototype, 'int', 'buffered')
+	core.addProperty(VideoJSPrototype, 'bool', 'logsEnabled')
+	_globals.core._protoOnChanged(VideoJSPrototype, 'source', (function(value) {
+		this._player.src(value);
+		this._player.ready(function() {
+			log("VIDEOJS ready");
+		});
+	} ))
+	_globals.core._protoOnChanged(VideoJSPrototype, 'width', (function(value) { 
+		this.element.dom.width = value;
+		if (this._player)
+			this._player.width = value;
+	} ))
+	_globals.core._protoOnChanged(VideoJSPrototype, 'height', (function(value) { this.element.dom.height = value; } ))
+
+	VideoJSPrototype.__create = function(__closure) {
+		VideoJSBasePrototype.__create.call(this, __closure.__base = { })
+
+	}
+	VideoJSPrototype.__setup = function(__closure) {
+	VideoJSBasePrototype.__setup.call(this, __closure.__base); delete __closure.__base
+//assigning width to (640)
+			this._removeUpdater('width'); this.width = ((640));
+//assigning logsEnabled to (this._get('recursiveVisible'))
+			var update$this$logsEnabled = (function() { this.logsEnabled = ((this._get('recursiveVisible'))); }).bind(this)
+			var dep$this$logsEnabled$0 = this
+			this.connectOnChanged(dep$this$logsEnabled$0, 'recursiveVisible', update$this$logsEnabled)
+			this._removeUpdater('logsEnabled', [[dep$this$logsEnabled$0, 'recursiveVisible', update$this$logsEnabled]])
+			update$this$logsEnabled();
+//assigning height to (480)
+			this._removeUpdater('height'); this.height = ((480));
+}
+
 
 //=====[component html5.Location]=====================
 
@@ -4196,7 +6238,7 @@ exports.initImage = function(image) {
 			image.paintedHeight = image.height
 		}
 
-		var style = {'background-image': 'url(' + image.source + ')'}
+		var style = {'background-image': 'url("' + image.source + '")'}
 		switch(image.fillMode) {
 			case image.Stretch:
 				style['background-repeat'] = 'no-repeat'

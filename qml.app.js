@@ -2201,6 +2201,12 @@ var core = _globals.core.core
 	core.addProperty(TheOPlayerPrototype, 'int', 'buffered')
 	core.addProperty(TheOPlayerPrototype, 'bool', 'logsEnabled')
 	_globals.core._protoOnChanged(TheOPlayerPrototype, 'source', (function(value) {
+		this._player.source = {
+			sources : [{
+				src : value,
+				type : 'application/x-mpegurl'
+			}]
+		};
 	} ))
 	_globals.core._protoOnChanged(TheOPlayerPrototype, 'width', (function(value) { this.element.dom.width = value; } ))
 	_globals.core._protoOnChanged(TheOPlayerPrototype, 'height', (function(value) { this.element.dom.height = value; } ))
@@ -2501,6 +2507,7 @@ var this$child0 = new _globals.controls.core.Resource(this)
 			this._get('jwp').loadPlaylist(playlist)
 
 			this._get('btm').source = playlist[0].file
+			this._get('theo').source = playlist[0].file
 
 			this._get('plView').model.append(plModel)
 

@@ -1,5 +1,5 @@
 'use strict'
-var log = null
+var log = function() { }
 /** @const @type {!CoreObject} */
 var qml = (function() {/** @const */
 var exports = {};

@@ -2164,12 +2164,12 @@ var core = _globals.core.core
 			libraryLocation : ''
 		});
 
-		this._player.source = {
-			sources : [{
-				src : '//cdn.theoplayer.com/video/star_wars_episode_vii-the_force_awakens_official_comic-con_2015_reel_(2015)/index.m3u8',
-				type : 'application/x-mpegurl'
-			}]
-		};
+		// this._player.source = {
+		// 	sources : [{
+		// 		src : '//cdn.theoplayer.com/video/star_wars_episode_vii-the_force_awakens_official_comic-con_2015_reel_(2015)/index.m3u8',
+		// 		type : 'application/x-mpegurl'
+		// 	}]
+		// };
 	}
 
 	}
@@ -2740,20 +2740,18 @@ var this$child0 = new _globals.controls.core.Resource(this)
 			this_child2_child7$child0.__setup(__closure.__closure_this_child2_child7$child0)
 			delete __closure.__closure_this_child2_child7$child0
 
-//assigning source to ("https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm")
-			this_child2_child7$child0._removeUpdater('source'); this_child2_child7$child0.source = (("https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"));
-//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
-			var update$this_child2_child7_child0$height = (function() { this_child2_child7$child0.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(this_child2_child7$child0)
-			var dep$this_child2_child7_child0$height$0 = this_child2_child7$child0._get('parent')
-			this_child2_child7$child0.connectOnChanged(dep$this_child2_child7_child0$height$0, 'height', update$this_child2_child7_child0$height)
-			this_child2_child7$child0._removeUpdater('height', [[dep$this_child2_child7_child0$height$0, 'height', update$this_child2_child7_child0$height]])
-			update$this_child2_child7_child0$height();
 //assigning width to ((this._get('parent')._get('width') * ((100) / 100)))
 			var update$this_child2_child7_child0$width = (function() { this_child2_child7$child0.width = (((this._get('parent')._get('width') * ((100) / 100)))); }).bind(this_child2_child7$child0)
 			var dep$this_child2_child7_child0$width$0 = this_child2_child7$child0._get('parent')
 			this_child2_child7$child0.connectOnChanged(dep$this_child2_child7_child0$width$0, 'width', update$this_child2_child7_child0$width)
 			this_child2_child7$child0._removeUpdater('width', [[dep$this_child2_child7_child0$width$0, 'width', update$this_child2_child7_child0$width]])
 			update$this_child2_child7_child0$width();
+//assigning height to ((this._get('parent')._get('height') * ((100) / 100)))
+			var update$this_child2_child7_child0$height = (function() { this_child2_child7$child0.height = (((this._get('parent')._get('height') * ((100) / 100)))); }).bind(this_child2_child7$child0)
+			var dep$this_child2_child7_child0$height$0 = this_child2_child7$child0._get('parent')
+			this_child2_child7$child0.connectOnChanged(dep$this_child2_child7_child0$height$0, 'height', update$this_child2_child7_child0$height)
+			this_child2_child7$child0._removeUpdater('height', [[dep$this_child2_child7_child0$height$0, 'height', update$this_child2_child7_child0$height]])
+			update$this_child2_child7_child0$height();
 
 			this_child2$child7.addChild(this_child2_child7$child0)
 			this$child2.addChild(this_child2$child7)

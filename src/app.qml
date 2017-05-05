@@ -2,7 +2,7 @@ Item {
 	anchors.fill: context;
 
 	Resource {
-		url: "http://testapi.start.film/mobile/series/06ded95f-a7e8-3150-8cec-d084d565aae4";
+		id: resource;
 
 		onDataChanged: {
 			var playlist = [];
@@ -28,8 +28,6 @@ Item {
 
 			}
 
-			shakap.source = playlist[0].file
-
 			log("playlist", playlist)
 
 			jwp.loadPlaylist(playlist)
@@ -41,28 +39,14 @@ Item {
 		}
 	}
 
-	Row {
-		id: menu;
+	TextInput {
+		x: 5%;
+		width: 90%;
 		y: 20;
-		spacing: 20;
-		anchors.horizontalCenter: parent.horizontalCenter;
-		property string currentPage: "jw";
+		placeholder.text: "Series test URL";
 
-		TextButton {
-			page: "shaka";
-			text: "Shaka-Player";
-		}
-		TextButton {
-			page: "jw";
-			text: "JWPlayer";
-		}
-		TextButton {
-			page: "vjs";
-			text: "VideoJS";
-		}
-		TextButton {
-			page: "btm";
-			text: "Bitmovin";
+		onTextChanged: {
+			resource.url = value;
 		}
 	}
 	
@@ -70,13 +54,21 @@ Item {
 		id: playerRect;
 		width: 60%; x: 5%;
 		y: 80;
-		property string currentPlayer: menu.currentPage;
 		spacing: 20;
+
+
+		TextButton {
+			text: "Shaka-Player";
+		}
 
 		ShakaPlayer {
 			id: shakap;
 			width: 100%; height: width * 0.75;
 			source: "//storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd";
+		}
+
+		TextButton {
+			text: "JWPlayer";
 		}
 
 		Item {
@@ -90,6 +82,10 @@ Item {
 			}
 		}
 
+		TextButton {
+			text: "Bitmovin";
+		}
+
 		Item { 
 			width: 100%; height: width * 0.75;
 			onVisibleChanged: {
@@ -99,6 +95,26 @@ Item {
 				id: btm;
 				width: 100%; height: 100%;
 			}
+		}
+
+		TextButton {
+			text: "TheOPlayer";
+		}
+
+		Item {
+			width: 100%; height: width * 0.75;
+			onVisibleChanged: {
+				theo.play(value)
+			}
+			TheOPlayer {
+				id: theo;
+				source: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm";
+				width: 100%; height: 100%;
+			}
+		}
+
+		TextButton {
+			text: "VideoJS";
 		}
 
 		Item {

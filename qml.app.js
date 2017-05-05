@@ -1896,6 +1896,15 @@ var core = _globals.core.core
 	}
 	core.addProperty(TextInputPrototype, 'string', 'text')
 	core.addProperty(TextInputPrototype, 'bool', 'passwordMode', (false))
+	_globals.core._protoOnChanged(TextInputPrototype, 'activeFocus', (function(value) {
+		if (value) {
+			this.element.dom.select()
+			var len = this.text.length
+			this.element.dom.setSelectionRange(len, len)
+		} else {
+			this.element.dom.blur()
+		}
+	} ))
 
 	TextInputPrototype.__create = function(__closure) {
 		TextInputBasePrototype.__create.call(this, __closure.__base = { })
@@ -2998,11 +3007,12 @@ var this$child0 = new _globals.controls.core.Resource(this)
 	core.addProperty(ShakaPlayerPrototype, 'int', 'progress')
 	core.addProperty(ShakaPlayerPrototype, 'int', 'buffered')
 	_globals.core._protoOnChanged(ShakaPlayerPrototype, 'source', (function(value) {
-		this._player.load(this.source).then(function() {
-			log('The video has now been loaded!');
-		}).catch(function(err) {
-			log("Error while loading", err)
-		});
+		if (this._player)
+			this._player.load(this.source).then(function() {
+				log('The video has now been loaded!');
+			}).catch(function(err) {
+				log("Error while loading", err)
+			});
 	} ))
 	_globals.core._protoOnChanged(ShakaPlayerPrototype, 'width', (function(value) { this.element.dom.width = value; } ))
 	_globals.core._protoOnChanged(ShakaPlayerPrototype, 'height', (function(value) { this.element.dom.height = value; } ))

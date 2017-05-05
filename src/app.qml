@@ -33,6 +33,7 @@ Item {
 			jwp.loadPlaylist(playlist)
 
 			btm.source = playlist[0].file
+			theo.source = playlist[0].file
 
 			plView.model.append(plModel)
 
